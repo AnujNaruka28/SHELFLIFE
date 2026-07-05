@@ -1,0 +1,37 @@
+Pending Items from STRUCTURE.md
+--------------------------------------------------
+1. Barcode scanner integration (browser-based) -> Frontend concern
+2. Visual shelf display (colors based on status) -> Frontend concern
+3. Leaderboard showing top contributors -> Frontend concern (Calculate using items data)
+4. Email digest to all household members (Nodemailer) -> Backend (Deferred)
+5. Refresh Tokens Implementation -> Backend (Deferred, currently using 30d long-lived access token)
+
+
+Test Cases & Edge Cases (Failure Conditions to Test)
+--------------------------------------------------
+1.  Register with an already-used email (Expected: 403)
+2.  Register with missing name, email, or password (Expected: 400)
+3.  Register with a name < 2 chars or password < 6 chars (Expected: 400)
+4.  Login with an incorrect password (Expected: 403)
+5.  Login with an unregistered/non-existent email (Expected: 404)
+6.  Access any protected route without an Authorization header (Expected: 403)
+7.  Access any protected route with an invalid or expired JWT (Expected: 403)
+8.  Create a household with a name < 3 chars (Expected: 400)
+9.  Create a household while the user is already a member of one (Expected: 400)
+10. Join a household with an invalid or incorrect invite code (Expected: 400)
+11. Join a household when the user is already a member of one (Expected: 400)
+12. Attempt to leave a household when the user is not in any household (Expected: 400)
+13. Attempt to fetch members (GET /households/:id/members) of a different household (Expected: 403)
+14. Create an item missing required fields (name, category, expiryDate) (Expected: 400)
+15. Create an item when the user doesn't belong to any household (Expected: 400)
+16. Create an item with a quantity <= 0 (Expected: 400)
+17. Update an item (PUT /items/:id) by a member who did not create the item (Expected: 401)
+18. Update an item with an empty request body (Expected: 400)
+19. Attempt to mark an item status as "fresh" via PATCH (Expected: 400)
+20. Delete an item by a member who did not create it (Expected: 401)
+21. Fetch dashboard stats for a user who does not belong to a household (Expected: 400)
+22. Upload a profile picture (PUT /change-profile) without attaching a file (Expected: 400)
+23. Upload a profile picture with an invalid file type like PDF (Expected: Multer Error)
+24. Pass an invalidly formatted string (not a 24-char hex) as an :id parameter in item routes (Expected: 400)
+25. Token Stale Data Check: User joins a household, but their existing JWT still shows householdId as null (Expected behavior until refresh tokens are added)
+26. Delete Profile Image: Attempt to delete profile image for a user who only has the default ui-avatars image (Expected: Handled gracefully, no crash)
