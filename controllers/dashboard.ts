@@ -38,7 +38,7 @@ const stats = async (req: Request, res: Response) => {
     return success(res, "Stats fetched successfully.", {
         totalItems: allItems.length,
         wasteScore:
-            allItems.length === 0 ? 0 : (statsCounts.used / allItems.length) * 100,
+            allItems.length === 0 ? 0 : (statsCounts.wasted / allItems.length) * 100,
         ...statsCounts,
     });
 };

@@ -6,6 +6,7 @@ Pending Items from STRUCTURE.md
 4. Email digest to all household members (Nodemailer) -> Backend (Deferred)
 5. Refresh Tokens Implementation -> Backend (Deferred, currently using 30d long-lived access token)
 
+EMAIL VERIFICATION, PASSWORD RESET, WASTE SCORE PROPER
 
 Test Cases & Edge Cases (Failure Conditions to Test)
 --------------------------------------------------

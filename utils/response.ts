@@ -14,13 +14,9 @@ const success = <T>(
 };
 
 const noContent = (
-    res: Response,
-    message: string
+    res: Response
 ) : Response => {
-    return res.status(StatusCode.noContent).json({
-        status: "success",
-        message
-    })
+    return res.status(StatusCode.noContent).json();
 }
 
 const error = <T>(

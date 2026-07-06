@@ -5,9 +5,36 @@ import * as routes from "./routes/index.js";
 import ENV from "./validations/env.validation.js";
 import errorHandler from "./middlewares/error.js";
 import { connectToCloudinary } from "./config/cloudinary.js";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 
 const app = express();
-app.use(cors());
+
+// CORS configuration
+app.use(cors({
+    origin: ENV.ORIGIN,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
+app.use(helmet());
+
+// Rate limiting for all routes
+app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+}));
+
+// Rate limiting for auth routes
+export const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+});
+
+// Parse JSON request bodies
 app.use(express.json());
 const PORT = ENV?.PORT || 4000;
 
