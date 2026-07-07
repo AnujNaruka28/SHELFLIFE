@@ -15,7 +15,7 @@ interface Item {
     expiryDate: Date;
 }
 
-const Logo = () => (
+const Logo : React.FC = () => (
   <svg
     width="30px"
     height="30px"
