@@ -11,6 +11,8 @@ interface IUser extends Document {
     }
     token?: string;
     role: "admin" | "member";
+    otp?: number;
+    otpExpiry?: Date;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -10,7 +10,8 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   CLOUDINARY_CLOUD: z.string().min(9),
   CLOUDINARY_API_SECRET: z.string(),
-  CLOUDINARY_API_KEY: z.string()
+  CLOUDINARY_API_KEY: z.string(),
+  RESEND_API_KEY: z.string()
 });
 
 const result = envSchema.safeParse(process.env);

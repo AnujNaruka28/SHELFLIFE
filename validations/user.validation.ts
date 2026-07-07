@@ -15,6 +15,12 @@ const userSchema = z.object({
 });
 
 const loginSchema = userSchema.pick({ email: true, password: true });
-const registerSchema = userSchema.pick({ name: true, email: true, password: true });
+const registerSchema = userSchema.pick({ name: true, email: true, password: true }).extend({
+    otp: z.number().optional(),
+});
 
-export { userSchema, loginSchema, registerSchema };
+const verifyOtpSchema = z.object({
+    email: z.email("Invalid email address"),
+});
+
+export { userSchema, loginSchema, registerSchema, verifyOtpSchema };

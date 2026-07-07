@@ -6,7 +6,7 @@ const run = async () => {
     
     await connectDB();
     await updateItemStatusCron();
-
+    
     console.log("Cron job completed successfully.");
     process.exit(0);
 
