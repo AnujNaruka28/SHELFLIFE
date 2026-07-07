@@ -3,16 +3,16 @@
     // Environment setup & latest features
     "lib": ["ESNext"],
     "target": "ESNext",
-    "module": "NodeNext",
+    "module": "ESNext",
     "moduleDetection": "force",
-    "jsx": "react-jsx",
+    "jsx": "react",
     "allowJs": true,
     "types": ["node"],
 
     // Node module mode
-    "moduleResolution": "NodeNext",
-    "verbatimModuleSyntax": true,
-    "allowImportingTsExtensions": false,
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "outDir": "dist",
     "noEmit": false,
 
@@ -27,5 +27,9 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
   }
 }

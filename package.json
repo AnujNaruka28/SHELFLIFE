@@ -27,13 +27,15 @@
     "mongoose": "^9.7.3",
     "multer": "^2.2.0",
     "otp-generator": "^4.0.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "referral-codes": "^3.0.0",
     "resend": "^6.17.1",
     "zod": "^4.4.3"
   },
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node index.ts",
+    "dev": "tsc && node dist/index.js",
     "start": "node dist/index.js"
   }
 }

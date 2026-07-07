@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { register, login, sendOtp } from '../controllers/auth.js';
 import validate from '../middlewares/validate.js';
 import { loginSchema, registerSchema, verifyOtpSchema } from '../validations/user.validation.js';
-import { authLimiter } from '../index.js';
+import { authLimiter } from '../utils/rateLimiter.js';
 
 const authRouter = Router();
 
