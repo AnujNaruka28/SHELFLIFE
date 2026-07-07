@@ -4,9 +4,12 @@ import { deleteFromCloudinary, uploadToCloudinary } from "../utils/mediaUploader
 import type { CustomRequest } from "../types/CustomRequest.js";
 import { deleteProfileFromUser, updateUserProfile } from "../services/profile.service.js";
 
+interface MulterRequest extends Request {
+    file: any;
+}
 const updateProfilePicture = async (req: Request, res: Response) => {
 
-    const profileImageFile = req.file as any;
+    const profileImageFile = (req as MulterRequest).file;
     const userId = (req as CustomRequest).user?._id;
 
     if (!userId) return unauthorized(res, "User not found");

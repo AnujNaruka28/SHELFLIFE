@@ -7,7 +7,7 @@
     "moduleDetection": "force",
     "jsx": "react",
     "allowJs": true,
-    "types": ["node"],
+    "types": ["node","multer"],
 
     // Node module mode
     "moduleResolution": "bundler",
