@@ -1,6 +1,5 @@
 import { Schema, model } from "mongoose";
 import type { IOtp } from "../types/IOtp.js";
-import { generateOTP, getOTPExpiry } from "../utils/otp.js";
 import mailSender from "../utils/mailSender.js";
 
 const OtpSchema = new Schema<IOtp>({
@@ -16,28 +15,25 @@ const OtpSchema = new Schema<IOtp>({
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 600, // 10 minutes
+        expires: 10*60, // 10 minutes
     },
 });
 
-OtpSchema.pre('save', async function () {
-    const doc = this as any;
-    
-    if (!doc.isNew) {
-        return;
-    }
-
+async function sendOtpEmail(this: IOtp) {
     try {
         await mailSender({
-            emails: [doc.email],
-            otp: doc.otp,
-            householdName: doc.name,
+            emails: [this.email],
+            otp: this.otp,
             isVerification: true,
         });
     } catch (error) {
         console.error("Failed to send OTP email:", error);
         throw error;
     }
+};
+
+OtpSchema.pre("save", async function () {
+    await sendOtpEmail.call(this);
 });
 
 const Otp = model<IOtp>("Otp", OtpSchema);

@@ -34,7 +34,6 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
         },
         role: payload.role,
         householdId: payload.householdId,
-        isEmailVerified: payload.isEmailVerified || false,
     };
 
     next();

@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { forbidden, notFound, success } from "../utils/response.js";
-import { isSamePassword, validatePassword } from "../utils/password.js";
+import { validatePassword } from "../utils/password.js";
 import { createUser, findUserByEmail } from "../services/authentication.service.js";
 import { generateToken } from "../utils/token.js";
 import { generateOTP } from "../utils/otp.js";
