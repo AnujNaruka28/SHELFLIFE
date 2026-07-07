@@ -2,8 +2,9 @@ import { renderToString } from "react-dom/server";
 import React from "react";
 import CommonMailTemplate from "../emails/CommonMailTemplate.js";
 import { Resend } from "resend";
+import ENV from "../validations/env.validation.js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(ENV.RESEND_API_KEY);
 
 interface MailSenderOptions {
     emails: string[];

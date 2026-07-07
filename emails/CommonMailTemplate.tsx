@@ -1,4 +1,3 @@
-import React from 'react';
 
 interface MailPropType {
     otp ?: number;
@@ -15,7 +14,7 @@ interface Item {
     expiryDate: Date;
 }
 
-const Logo : React.FC = () => (
+const Logo = () => (
   <svg
     width="30px"
     height="30px"
