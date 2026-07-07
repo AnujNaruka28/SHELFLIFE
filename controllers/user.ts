@@ -6,7 +6,7 @@ import { deleteProfileFromUser, updateUserProfile } from "../services/profile.se
 
 const updateProfilePicture = async (req: Request, res: Response) => {
 
-    const profileImageFile = req.file as Express.Multer.File;
+    const profileImageFile = req.file as any;
     const userId = (req as CustomRequest).user?._id;
 
     if (!userId) return unauthorized(res, "User not found");
