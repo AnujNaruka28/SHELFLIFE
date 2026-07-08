@@ -32,5 +32,6 @@
     "experimentalSpecifierResolution": "node"
   },
 
-  "include": ["emails/**/*"]
+  "include": ["emails/**/*"],
+  "rootDir": "."
 }
