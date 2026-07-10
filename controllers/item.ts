@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { deleteItemById, findItems, saveItem, updateItemById, updateItemStatusById } from "../services/item.service.js";
+import { deleteItemById, findItems, saveItem, updateItemById, updateItemStatusById, updateWasteScoreByHouseholdId } from "../services/item.service.js";
 import { badRequest, error, noContent, success } from "../utils/response.js";
 import type { CustomRequest } from "../types/CustomRequest.ts";
 
@@ -32,7 +32,12 @@ const getItems = async (req: Request, res: Response, next: NextFunction) => {
     if (itemsFiltered instanceof Error) return next(itemsFiltered);
     if (itemsFiltered.length === 0) return noContent(res);
 
-    return success(res, "Items Fetched Successfully.", itemsFiltered);
+    return success(res, "Items Fetched Successfully.", {
+        ...itemsFiltered,
+        total: itemsFiltered.length,
+        page: pageInt,
+        pages: Math.ceil(itemsFiltered.length / limitInt),
+    });
 };
 
 const createItem = async (req: Request, res: Response, next: NextFunction) => {
@@ -100,6 +105,7 @@ const updateItemStatus = async (req: Request, res: Response, next: NextFunction)
     if (updatedItem instanceof Error) return next(updatedItem);
     if (!updatedItem) return error(res, "Item not found.");
 
+    await updateWasteScoreByHouseholdId(updatedItem.householdId);
     return success(res, "Item use status updated successfully.", updatedItem);
 };
 

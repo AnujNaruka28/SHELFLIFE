@@ -1,38 +1,226 @@
 Pending Items from STRUCTURE.md
 --------------------------------------------------
 1. Barcode scanner integration (browser-based) -> Frontend concern
-2. Visual shelf display (colors based on status) -> Frontend concern
-3. Leaderboard showing top contributors -> Frontend concern (Calculate using items data)
-4. Email digest to all household members (Nodemailer) -> Backend (Deferred)
-5. Refresh Tokens Implementation -> Backend (Deferred, currently using 30d long-lived access token)
+2. Leaderboard showing top contributors -> Frontend concern (Calculate using items data)
+3. Refresh Tokens Implementation -> Backend (Deferred, currently using 30d long-lived access token)
 
-EMAIL VERIFICATION, PASSWORD RESET, WASTE SCORE PROPER
+Comprehensive Test Cases
+==================================================
 
-Test Cases & Edge Cases (Failure Conditions to Test)
+1. Auth Routes
+==================================================
+
+1.1 POST /auth/otp (Send OTP)
 --------------------------------------------------
-1.  Register with an already-used email (Expected: 403)
-2.  Register with missing name, email, or password (Expected: 400)
-3.  Register with a name < 2 chars or password < 6 chars (Expected: 400)
-4.  Login with an incorrect password (Expected: 403)
-5.  Login with an unregistered/non-existent email (Expected: 404)
-6.  Access any protected route without an Authorization header (Expected: 403)
-7.  Access any protected route with an invalid or expired JWT (Expected: 403)
-8.  Create a household with a name < 3 chars (Expected: 400)
-9.  Create a household while the user is already a member of one (Expected: 400)
-10. Join a household with an invalid or incorrect invite code (Expected: 400)
-11. Join a household when the user is already a member of one (Expected: 400)
-12. Attempt to leave a household when the user is not in any household (Expected: 400)
-13. Attempt to fetch members (GET /households/:id/members) of a different household (Expected: 403)
-14. Create an item missing required fields (name, category, expiryDate) (Expected: 400)
-15. Create an item when the user doesn't belong to any household (Expected: 400)
-16. Create an item with a quantity <= 0 (Expected: 400)
-17. Update an item (PUT /items/:id) by a member who did not create the item (Expected: 401)
-18. Update an item with an empty request body (Expected: 400)
-19. Attempt to mark an item status as "fresh" via PATCH (Expected: 400)
-20. Delete an item by a member who did not create it (Expected: 401)
-21. Fetch dashboard stats for a user who does not belong to a household (Expected: 400)
-22. Upload a profile picture (PUT /change-profile) without attaching a file (Expected: 400)
-23. Upload a profile picture with an invalid file type like PDF (Expected: Multer Error)
-24. Pass an invalidly formatted string (not a 24-char hex) as an :id parameter in item routes (Expected: 400)
-25. Token Stale Data Check: User joins a household, but their existing JWT still shows householdId as null (Expected behavior until refresh tokens are added)
-26. Delete Profile Image: Attempt to delete profile image for a user who only has the default ui-avatars image (Expected: Handled gracefully, no crash)
+1.1.1 Send OTP with valid, unregistered email (Expected: 200 success, OTP generated)
+1.1.2 Send OTP with already registered email (Expected: 403)
+1.1.3 Send OTP with invalid email format (Expected: 400)
+1.1.4 Send OTP with missing email (Expected: 400)
+1.1.5 Rate limiting test: Send multiple OTP requests in quick succession (Expected: 429)
+
+1.2 POST /auth/register (Register User)
+--------------------------------------------------
+1.2.1 Register with valid data, correct OTP (Expected: 200 success)
+1.2.2 Register with already-used email (Expected: 403)
+1.2.3 Register with missing name, email, or password (Expected: 400)
+1.2.4 Register with name < 2 chars (Expected: 400)
+1.2.5 Register with name > 30 chars (Expected: 400)
+1.2.6 Register with password < 6 chars (Expected: 400)
+1.2.7 Register with password > 100 chars (Expected: 400)
+1.2.8 Register with empty/whitespace name (Expected: 400)
+1.2.9 Register with invalid OTP (Expected: 403)
+1.2.10 Register with expired OTP (Expected: 403)
+
+1.3 POST /auth/login (Login User)
+--------------------------------------------------
+1.3.1 Login with correct email and password (Expected: 200 success, token returned)
+1.3.2 Login with incorrect password (Expected: 403)
+1.3.3 Login with unregistered/non-existent email (Expected: 404)
+1.3.4 Login with missing email or password (Expected: 400)
+1.3.5 Login with invalid email format (Expected: 400)
+1.3.6 Rate limiting test: Multiple failed login attempts (Expected: 429)
+
+==================================================
+2. Household Routes
+==================================================
+
+2.1 POST /households (Create Household)
+--------------------------------------------------
+2.1.1 Create household with valid name (3-30 chars) (Expected: 200 success)
+2.1.2 Create household with name < 3 chars (Expected: 400)
+2.1.3 Create household with name > 30 chars (Expected: 400)
+2.1.4 Create household with empty/whitespace name (Expected: 400)
+2.1.5 Create household while user is already a member of one (Expected: 400)
+2.1.6 Create household without Authorization header (Expected: 403)
+2.1.7 Create household with invalid/expired JWT (Expected: 403)
+
+2.2 POST /households/join (Join Household)
+--------------------------------------------------
+2.2.1 Join household with valid 6-character invite code (Expected: 200 success)
+2.2.2 Join household with invalid invite code (not 6 chars) (Expected: 400)
+2.2.3 Join household with incorrect/non-existent invite code (Expected: 400)
+2.2.4 Join household when user is already a member of one (Expected: 400)
+2.2.5 Join household without Authorization header (Expected: 403)
+2.2.6 Join household with invalid/expired JWT (Expected: 403)
+
+2.3 POST /households/leave (Leave Household)
+--------------------------------------------------
+2.3.1 Leave household when user is in a household (Expected: 200 success)
+2.3.2 Attempt to leave household when user is not in any household (Expected: 400)
+2.3.3 Leave household without Authorization header (Expected: 403)
+
+2.4 GET /households/me (Get Current Household)
+--------------------------------------------------
+2.4.1 Get household when user is in a household (Expected: 200 success)
+2.4.2 Get household when user is not in any household (Expected: 404)
+2.4.3 Get household without Authorization header (Expected: 403)
+
+2.5 GET /households/:id/members (Get Household Members)
+--------------------------------------------------
+2.5.1 Get members of user's own household (Expected: 200 success)
+2.5.2 Fetch members of a different household (Expected: 403)
+2.5.3 Fetch members with invalid household ID (not 24-char hex) (Expected: 400)
+2.5.4 Fetch members of non-existent household (Expected: 404)
+2.5.5 Fetch members when household has no members (Expected: 204 No Content)
+2.5.6 Fetch members without Authorization header (Expected: 403)
+
+==================================================
+3. Item Routes
+==================================================
+
+3.1 GET /items (Get Items)
+--------------------------------------------------
+3.1.1 Get items without filters (Expected: 200 success)
+3.1.2 Get items filtered by category (produce/dairy/meat/pantry/frozen/other) (Expected: 200)
+3.1.3 Get items filtered by status (fresh/expiring-soon/expired/used/wasted) (Expected: 200)
+3.1.4 Get items with both category and status filters (Expected: 200)
+3.1.5 Get items when user doesn't belong to any household (Expected: 400)
+3.1.6 Get items with no items found (Expected: 204 No Content)
+3.1.7 Get items without Authorization header (Expected: 403)
+3.1.8 Get items with invalid category (Expected: 400)
+3.1.9 Get items with invalid status (Expected: 400)
+
+3.2 POST /items (Create Item)
+--------------------------------------------------
+3.2.1 Create item with all valid fields (Expected: 200 success)
+3.2.2 Create item missing required fields (name, category, expiryDate) (Expected: 400)
+3.2.3 Create item when user doesn't belong to any household (Expected: 400)
+3.2.4 Create item with quantity <= 0 (Expected: 400)
+3.2.5 Create item with name < 2 chars (Expected: 400)
+3.2.6 Create item with name > 30 chars (Expected: 400)
+3.2.7 Create item with empty/whitespace name (Expected: 400)
+3.2.8 Create item with invalid category (Expected: 400)
+3.2.9 Create item with invalid expiryDate format (Expected: 400)
+3.2.10 Create item without Authorization header (Expected: 403)
+3.2.11 Verify item status is computed correctly:
+    - Expiry date in past → "expired"
+    - Expiry date within 3 days → "expiring-soon"
+    - Expiry date > 3 days → "fresh"
+
+3.3 PUT /items/:id (Update Item)
+--------------------------------------------------
+3.3.1 Update item by creator with valid data (Expected: 200 success)
+3.3.2 Update item by member who did not create the item (Expected: 401)
+3.3.3 Update item with empty request body (Expected: 400)
+3.3.4 Update item with invalid item ID (not 24-char hex) (Expected: 400)
+3.3.5 Update non-existent item (Expected: 500 error)
+3.3.6 Update item with name < 2 chars (Expected: 400)
+3.3.7 Update item with name > 30 chars (Expected: 400)
+3.3.8 Update item with quantity <= 0 (Expected: 400)
+3.3.9 Update item with invalid category (Expected: 400)
+3.3.10 Update item with invalid expiryDate (Expected: 400)
+3.3.11 Update item without Authorization header (Expected: 403)
+
+3.4 DELETE /items/:id (Delete Item)
+--------------------------------------------------
+3.4.1 Delete item by creator (Expected: 204 No Content)
+3.4.2 Delete item by member who did not create it (Expected: 401)
+3.4.3 Delete item with invalid item ID (not 24-char hex) (Expected: 400)
+3.4.4 Delete non-existent item (Expected: 500 error)
+3.4.5 Delete item without Authorization header (Expected: 403)
+
+3.5 PATCH /items/:id/status (Update Item Status)
+--------------------------------------------------
+3.5.1 Mark item as "used" by creator (Expected: 200 success)
+3.5.2 Mark item as "wasted" by creator (Expected: 200 success)
+3.5.3 Attempt to mark item status as "fresh" (Expected: 400)
+3.5.4 Attempt to mark item status as "expiring-soon" (Expected: 400)
+3.5.5 Attempt to mark item status as "expired" (Expected: 400)
+3.5.6 Update status by member who did not create the item (Expected: 401)
+3.5.7 Update status with invalid item ID (not 24-char hex) (Expected: 400)
+3.5.8 Update status of non-existent item (Expected: 500 error)
+3.5.9 Update status without Authorization header (Expected: 403)
+3.5.10 Verify waste score is updated after marking item as "wasted"
+
+==================================================
+4. Dashboard Routes
+==================================================
+
+4.1 GET /dashboard/stats (Get Dashboard Stats)
+--------------------------------------------------
+4.1.1 Get stats when user belongs to a household (Expected: 200 success)
+4.1.2 Get stats for user who does not belong to a household (Expected: 400)
+4.1.3 Get stats when household has no items (Expected: 200 with all counts 0)
+4.1.4 Get stats when household has items in all statuses (Expected: 200 with correct counts)
+4.1.5 Verify waste score calculation: (wasted / totalItems) * 100
+4.1.6 Get stats without Authorization header (Expected: 403)
+
+4.2 GET /dashboard/expiring (Get Expiring Items)
+--------------------------------------------------
+4.2.1 Get expiring items (within 24 hours) (Expected: 200 success)
+4.2.2 Get expiring items when none exist (Expected: 204 No Content)
+4.2.3 Get expiring items when user doesn't belong to a household (Expected: 400)
+4.2.4 Get expiring items without Authorization header (Expected: 403)
+
+==================================================
+5. Profile Routes
+==================================================
+
+5.1 PUT /change-profile (Update Profile Picture)
+--------------------------------------------------
+5.1.1 Upload valid profile picture (image file) (Expected: 200 success)
+5.1.2 Upload profile picture without attaching a file (Expected: 400)
+5.1.3 Upload invalid file type (PDF, TXT, etc.) (Expected: Multer Error)
+5.1.4 Upload profile picture when user already has one (Expected: 200, old image deleted from Cloudinary)
+5.1.5 Upload profile picture without Authorization header (Expected: 403)
+
+5.2 DELETE /delete-profile (Delete Profile Picture)
+--------------------------------------------------
+5.2.1 Delete profile picture when user has one (Expected: 200 success, image deleted from Cloudinary)
+5.2.2 Delete profile image for user who only has default ui-avatars image (Expected: Handled gracefully, no crash)
+5.2.3 Delete profile picture without Authorization header (Expected: 403)
+
+==================================================
+6. General & Edge Cases
+==================================================
+
+6.1 Authentication Middleware
+--------------------------------------------------
+6.1.1 Access any protected route without Authorization header (Expected: 403)
+6.1.2 Access any protected route with invalid JWT (Expected: 403)
+6.1.3 Access any protected route with expired JWT (Expected: 403)
+
+6.2 ID Parameter Validation
+--------------------------------------------------
+6.2.1 Pass invalidly formatted string (not 24-char hex) as :id parameter in item routes (Expected: 400)
+6.2.2 Pass invalidly formatted string (not 24-char hex) as :id parameter in household routes (Expected: 400)
+
+6.3 Token Stale Data
+--------------------------------------------------
+6.3.1 User joins a household, but their existing JWT still shows householdId as null (Expected behavior until refresh tokens are added)
+
+6.4 Cron Jobs (If testable)
+--------------------------------------------------
+6.4.1 Test clean-expired-items-cron.ts marks expired items correctly
+6.4.2 Test daily-itemstatus-cron.ts updates item statuses correctly
+6.4.3 Test daily-mail-cron.ts sends expiring item notifications
+
+==================================================
+Test Case Notes
+==================================================
+- All tests should verify both success and error responses
+- Test status codes match expected values
+- Validate response body structure and content
+- Test edge cases for all input validations
+- Test rate limiting where applicable
+- Verify database state after each operation

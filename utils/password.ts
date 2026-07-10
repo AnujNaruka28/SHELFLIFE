@@ -4,4 +4,6 @@ const hashPassword = (password: string) : Promise<string> => bcrypt.hash(passwor
 
 const validatePassword = (password: string, hashedPassword: string) : Promise<boolean> => bcrypt.compare(password, hashedPassword);
 
-export { hashPassword, validatePassword };
+const isSamePassword = (password: string, hashedPassword: string) : Promise<boolean> => bcrypt.compare(password, hashedPassword);
+
+export { hashPassword, validatePassword, isSamePassword };

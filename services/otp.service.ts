@@ -4,9 +4,7 @@ import type { IOtp } from "../types/IOtp.js";
 interface OtpInput {
     email: string;
     otp: number;
-    expiry: Date;
-    name: string;
-    password: string;
+    createdAt: string;
 }
 
 export const createOtp = async (otpInput: OtpInput): Promise<IOtp> => {
