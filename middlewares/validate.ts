@@ -18,7 +18,7 @@ const validate = (schema: ZodType, source: ValidationSource = "body") => {
     const result = schema.safeParse(data);
 
     if (!result.success) {
-      return badRequest(res, treeifyError(result.error).toString());
+      return badRequest(res, JSON.stringify(treeifyError(result.error)));
     }
 
     next();

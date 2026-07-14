@@ -10,7 +10,7 @@ interface IUser extends Document {
         public_id?: string,
     }
     token?: string;
-    role: "admin" | "member";
+    role: "admin" | "member" | "user";
     otp?: number;
     otpExpiry?: Date;
     createdAt: Date;

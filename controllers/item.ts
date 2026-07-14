@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { deleteItemById, findItems, saveItem, updateItemById, updateItemStatusById, updateWasteScoreByHouseholdId } from "../services/item.service.js";
+import { deleteItemById, findItems, saveItem, updateItemById, updateItemStatusById, updateWasteScoreByHouseholdId, checkItemIsValid } from "../services/item.service.js";
 import { badRequest, error, noContent, success } from "../utils/response.js";
 import type { CustomRequest } from "../types/CustomRequest.ts";
 
@@ -70,6 +70,9 @@ const updateItem = async (req: Request, res: Response, next: NextFunction) => {
     const { name, quantity, category, expiryDate } = req.body;
     const id = req.params.id;
     const updatedBy = (req as CustomRequest).user?._id;
+
+    const isItemValid = await checkItemIsValid(id as string);
+    if (!isItemValid) return error(res, "Item is either used, wasted or expired.");
 
     const updatedItem = await updateItemById(id as string, {
         name,

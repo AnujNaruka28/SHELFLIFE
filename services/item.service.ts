@@ -111,4 +111,8 @@ const updateWasteScoreByHouseholdId = async (householdId: Types.ObjectId) => {
     await HouseHold.findByIdAndUpdate(householdId, { wasteScore });
 };
 
-export { findItems, saveItem, updateItemById, deleteItemById, updateItemStatusById, updateItemStatusCron, cleanExpiredItemsFromDBAfterMonth, updateWasteScoreByHouseholdId };
+const checkItemIsValid = async (id: string) => {
+    const item = await Item.findById(id);
+    return item?.status !== "used" && item?.status !== "wasted" && item?.status !== "expired";
+};
+export { findItems, saveItem, updateItemById, deleteItemById, updateItemStatusById, updateItemStatusCron, cleanExpiredItemsFromDBAfterMonth, updateWasteScoreByHouseholdId, checkItemIsValid };

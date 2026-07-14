@@ -28,7 +28,7 @@ const updateHouseHoldMember = async (userId: Types.ObjectId, houseHoldId: Types.
         {
             $addToSet: { members: userId },
         },
-        { new: true },
+        { returnDocument: "after" },
     ).populate({ path: "members", select: "name email" });
 
     return updatedHousehold;
@@ -46,7 +46,7 @@ const joinUserByInviteCode = async (userId: Types.ObjectId, inviteCode: string) 
         household._id,
         { $addToSet: { members: userId } },
         { new: true },
-    ).populate({ path: "members", select: "name email" });
+    ).populate({ path: "members", select: "name email role" });
 
     const updatedUser = await User.findByIdAndUpdate(
         userId,

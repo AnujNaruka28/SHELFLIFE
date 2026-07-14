@@ -33,8 +33,8 @@ async function mailSender(options: MailSenderOptions) {
 
         const emailPromises = options.emails.map(email =>
             resend.emails.send({
-                from: "ShelfLife <shelflife.eco@gmail.com>",
-                to: email,
+                from: "ShelfLife <onboarding@resend.dev>",
+                to: "shelflife.eco@gmail.com",
                 subject: subject,
                 html: htmlContent,
             })

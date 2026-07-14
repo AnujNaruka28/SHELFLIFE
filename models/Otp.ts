@@ -19,22 +19,22 @@ const OtpSchema = new Schema<IOtp>({
     },
 });
 
-async function sendOtpEmail(this: IOtp) {
-    try {
-        await mailSender({
-            emails: [this.email],
-            otp: this.otp,
-            isVerification: true,
-        });
-    } catch (error) {
-        console.error("Failed to send OTP email:", error);
-        throw error;
-    }
-};
+// async function sendOtpEmail(this: IOtp) {
+//     try {
+//         await mailSender({
+//             emails: [this.email],
+//             otp: this.otp,
+//             isVerification: true,
+//         });
+//     } catch (error) {
+//         console.error("Failed to send OTP email:", error);
+//         throw error;
+//     }
+// };
 
-OtpSchema.pre("save", async function () {
-    await sendOtpEmail.call(this);
-});
+// OtpSchema.pre("save", async function () {
+//     await sendOtpEmail.call(this);
+// });
 
 const Otp = model<IOtp>("Otp", OtpSchema);
 

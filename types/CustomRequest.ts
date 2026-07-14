@@ -6,11 +6,11 @@ export interface CustomRequest extends Request {
         _id: Types.ObjectId;
         name: string;
         email: string;
-        profileImage: {
+        profileImage?: {
             secure_url: string;
             public_id?: string;
         };
         householdId?: Types.ObjectId;
-        role: "admin" | "member";
+        role: "admin" | "member" | "user";
     };
 }

@@ -6,7 +6,7 @@ import { generateToken } from "../utils/token.js";
 import { generateOTP } from "../utils/otp.js";
 import mailSender from "../utils/mailSender.js";
 import ENV from "../validations/env.validation.js";
-import { verifyLatestOtp } from "../services/otp.service.js";
+import { createOtp, verifyLatestOtp } from "../services/otp.service.js";
 
 const recentOtps = new Set<number>();
 
@@ -43,6 +43,8 @@ const sendOtp = async (req: Request, res: Response) => {
         recentOtps.delete(otp);
     }, 10 * 60 * 1000); // 10 minutes
 
+    await createOtp({ email, otp });
+
     if(ENV.NODE_ENV === "production") {
         await mailSender({
             emails: [email],
@@ -53,9 +55,7 @@ const sendOtp = async (req: Request, res: Response) => {
         return success(res, "OTP generated");
     } 
 
-    else if(ENV.NODE_ENV === "development") {
-        return success(res, "OTP generated", { otp });
-    }
+    return success(res, "OTP generated", { otp });
 
 }
 
@@ -73,12 +73,11 @@ const register = async (req: Request, res: Response) => {
     const newUser = await createUser({ name, email, password });
 
     const token = generateToken(newUser);
-
     newUser.password = undefined;
 
     return success(res, "User registered successfully. Please verify your email.", { 
-        token, 
-        user: newUser,
+        token,
+        user: newUser
     });
 };
 

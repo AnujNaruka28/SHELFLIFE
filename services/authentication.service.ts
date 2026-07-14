@@ -8,6 +8,11 @@ const findUserByEmail = async (email: string) : Promise<IUser | null> => {
     const user = await User.findOne({ email });
     return user;
 };
+
+const findUserById = async (userId: Types.ObjectId) : Promise<IUser | null> => {
+    const user = await User.findById(userId);
+    return user;
+};
     
 const createUser = async (userData: { name: string, email: string, password: string }) : Promise<IUser> => {
 
@@ -21,8 +26,7 @@ const createUser = async (userData: { name: string, email: string, password: str
         ...userData,
         profileImage: {
             secure_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name)}&background=random`,
-        },
-        role: "member",
+        }
     });
 
     return newUser;
@@ -36,7 +40,7 @@ const updateUserByEmail = async (email: string,householdId: Types.ObjectId) : Pr
             householdId: householdId,
             role: "admin"
         },
-        {new : true}
+        {returnDocument: "after"}
     )
 
     if(!updatedUser) throw new Error("Failed to add user to household.");
@@ -45,4 +49,4 @@ const updateUserByEmail = async (email: string,householdId: Types.ObjectId) : Pr
 
     return updatedUser;
 }
-export { findUserByEmail, createUser, updateUserByEmail};
+export { findUserByEmail, findUserById, createUser, updateUserByEmail};

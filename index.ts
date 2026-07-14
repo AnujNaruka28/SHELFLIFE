@@ -31,8 +31,13 @@ app.use(rateLimit({
 app.use(express.json());
 const PORT = ENV?.PORT || 4000;
 
-connectDB();
-connectToCloudinary();
+// Initialize database and cloudinary connections
+async function init() {
+  await connectDB();
+  await connectToCloudinary();
+}
+
+init();
 
 app.use((req, _res, next) => {
     const safeBody = { ...req.body };

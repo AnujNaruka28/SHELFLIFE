@@ -8,6 +8,7 @@ import {
     leaveHousehold,
 } from "../services/household.service.js";
 import { updateUserByEmail } from "../services/authentication.service.js";
+import { generateToken } from "../utils/token.js";
 import { badRequest, error, forbidden, noContent, notFound, success } from "../utils/response.js";
 
 const createHousehold = async (req: Request, res: Response) => {
@@ -20,13 +21,19 @@ const createHousehold = async (req: Request, res: Response) => {
     const houseHold = await houseHoldInvitation(householdName);
     if (!houseHold) return error(res, "Failed to create desired household.");
 
-    const updatedHousehold = await updateUserByEmail(user.email, houseHold._id);
+    const updatedUser = await updateUserByEmail(user.email, houseHold._id);
 
-    if (!updatedHousehold) return error(res, "Failed to add user to the household");
+    if (!updatedUser) return error(res, "Failed to add user to the household");
+
+    // Generate a new token with the updated user data
+    const token = generateToken(updatedUser);
+    
+    updatedUser.password = undefined;
 
     return success(res, "Household created successfully.", {
         household: houseHold,
-        user: updatedHousehold,
+        user: updatedUser,
+        token, // Send the new token back to the client
     });
 };
 
@@ -41,7 +48,15 @@ const joinHousehold = async (req: Request, res: Response) => {
 
     if (!result) return badRequest(res, "Invalid invite code or failed to join the household.");
 
-    return success(res, "Joined Household Successfully", result);
+    // Generate a new token with the updated user data
+    const token = generateToken(result.user);
+    
+    result.user.password = undefined;
+
+    return success(res, "Joined Household Successfully", {
+        ...result,
+        token, // Send the new token back to the client
+    });
 };
 
 const leaveHouseholdController = async (req: Request, res: Response) => {
@@ -54,7 +69,15 @@ const leaveHouseholdController = async (req: Request, res: Response) => {
 
     if (!updatedUser) return badRequest(res, "Failed to leave household.");
 
-    return success(res, "Left household successfully.", updatedUser);
+    // Generate a new token with the updated user data
+    const token = generateToken(updatedUser);
+    
+    updatedUser.password = undefined;
+
+    return success(res, "Left household successfully.", {
+        user: updatedUser,
+        token, // Send the new token back to the client
+    });
 };
 
 const existingHousehold = async (req: Request, res: Response) => {

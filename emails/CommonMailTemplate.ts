@@ -14,19 +14,16 @@ interface Item {
 }
 
 function CommonMailTemplate(MailProps: MailPropType): string {
-    const logoSvg = `
-    <svg width="30px" height="30px" viewBox="0 0 64 64" data-name="Layer 1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
-        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-        <g id="SVGRepo_iconCarrier">
-            <defs>
-                <style>.cls-1{fill:#ffb300;}.cls-2{fill:#0074ff;}</style>
-            </defs>
-            <title></title>
-            <path class="cls-1" d="M39.25,58.57H24.75a2,2,0,0,1-2-2V40.67a2,2,0,0,1,2-2h14.5a2,2,0,0,1,2,2v15.9A2,2,0,0,1,39.25,58.57Zm-12.5-4h10.5V42.67H26.75Z"></path>
-            <path class="cls-2" d="M48.41,58.57H15.59a2,2,0,0,1-2-2V30.51H5.73A2,2,0,0,1,4.48,27L30.75,5.87a2,2,0,0,1,2.5,0L59.52,27a2,2,0,0,1-1.25,3.56H50.41v9.37a2,2,0,0,1-4,0V28.51a2,2,0,0,1,2-2h4.17L32,10,11.42,26.51h4.17a2,2,0,0,1,2,2V54.57H46.41V50.76a2,2,0,1,1,4,0v5.81A2,2,0,0,1,48.41,58.57Z"></path>
-        </g>
-    </svg>`;
+    const logoHtml = `
+        <div style="text-align: center;">
+            <div style="font-size: 36px; font-weight: bold; margin-bottom: 10px;">
+                <span style="color: #ffb300;">Shelf</span><span style="color: #0074ff;">Life</span>
+            </div>
+            <div style="font-size: 12px; color: #666; letter-spacing: 2px; text-transform: uppercase;">
+                Track Your Food, Reduce Waste
+            </div>
+        </div>
+    `;
 
     let itemsTableHtml = '';
     if (MailProps.dailyDigest && MailProps.items && MailProps.items.length > 0) {
@@ -74,44 +71,89 @@ function CommonMailTemplate(MailProps: MailPropType): string {
         </p>
     ` : '';
 
+    const householdNameSection = MailProps.householdName ? `
+        <p style="font-size: 16px; color: #333; margin-bottom: 15px; line-height: 1.6;">
+            Household Name : ${MailProps.householdName}
+        </p>
+    ` : '';
+
     const messageText = MailProps.isVerification 
         ? "Here's your verification code : " 
         : "Here's the list of items that are expiring : ";
 
     const html = `
-        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-            <header style="width: 100%; padding: 20px; text-align: center; background-color: #f8f9fa;">
-                ${logoSvg}
-            </header>
-
-            <div style="padding: 30px; font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                ${verificationSection}
-
-                <p style="font-size: 16px; color: #333; margin-bottom: 15px; line-height: 1.6;">
-                    Household Name : ${MailProps.householdName || ''}
-                </p>
-
-                <p style="font-size: 16px; color: #333; margin-bottom: 15px; line-height: 1.6;">
-                    ${messageText}
-                </p>
-
-                ${otpSection}
-            </div>
-
-            ${itemsTableHtml}
-
-            <div style="margin-top: 30px; padding: 20px; border-top: 2px solid #e5e7eb; text-align: center; font-family: Arial, sans-serif;">
-                <p style="margin: 0 0 10px 0; font-size: 14px; color: #666;">
-                    Best regards,
-                </p>
-                <p style="margin: 0 0 5px 0; font-size: 16px; font-weight: bold; color: #0074ff;">
-                    The ShelfLife Team
-                </p>
-                <p style="margin: 0; font-size: 12px; color: #999;">
-                    Track your food, reduce waste, save money.
-                </p>
-            </div>
-        </div>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>ShelfLife</title>
+        </head>
+        <body style="margin: 0; padding: 0; width: 100%; background-color: #ffffff; font-family: Arial, sans-serif;">
+            <table role="presentation" cellspacing="0" cellpadding="0" width="100%" style="margin: 0; padding: 0;">
+                <!-- Header with Logo -->
+                <tr>
+                    <td style="padding: 20px; text-align: center; background-color: #f8f9fa;">
+                        ${logoHtml}
+                    </td>
+                </tr>
+                
+                <!-- Main Content -->
+                <tr>
+                    <td style="padding: 30px; font-family: Arial, sans-serif;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" width="100%" style="max-width: 600px; margin: 0 auto;">
+                            <tr>
+                                <td>
+                                    ${verificationSection}
+                                    ${householdNameSection}
+                                    <p style="font-size: 16px; color: #333; margin-bottom: 15px; line-height: 1.6;">
+                                        ${messageText}
+                                    </p>
+                                    ${otpSection}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                
+                <!-- Items Table -->
+                ${itemsTableHtml ? `
+                <tr>
+                    <td style="padding: 0 30px;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" width="100%" style="max-width: 600px; margin: 0 auto;">
+                            <tr>
+                                <td>
+                                    ${itemsTableHtml}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                ` : ''}
+                
+                <!-- Footer -->
+                <tr>
+                    <td style="padding: 30px;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" width="100%" style="max-width: 600px; margin: 0 auto;">
+                            <tr>
+                                <td style="padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; font-family: Arial, sans-serif;">
+                                    <p style="margin: 0 0 10px 0; font-size: 14px; color: #666;">
+                                        Best regards,
+                                    </p>
+                                    <p style="margin: 0 0 5px 0; font-size: 16px; font-weight: bold; color: #0074ff;">
+                                        The ShelfLife Team
+                                    </p>
+                                    <p style="margin: 0; font-size: 12px; color: #999;">
+                                        Track your food, reduce waste, save money.
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>
     `;
 
     return html.trim();

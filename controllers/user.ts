@@ -3,12 +3,13 @@ import { badRequest, error, success, unauthorized } from "../utils/response.js";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils/mediaUploader.js";
 import type { CustomRequest } from "../types/CustomRequest.js";
 import { deleteProfileFromUser, updateUserProfile } from "../services/profile.service.js";
+import { findUserById } from "../services/authentication.service.js";
 
 interface MulterRequest extends Request {
     file: any;
 }
 const updateProfilePicture = async (req: Request, res: Response) => {
-
+    
     const profileImageFile = (req as MulterRequest).file;
     const userId = (req as CustomRequest).user?._id;
 
@@ -16,10 +17,13 @@ const updateProfilePicture = async (req: Request, res: Response) => {
 
     if (!profileImageFile) return badRequest(res, "No profile image is provided.");
 
-    const user = (req as CustomRequest).user;
-    if (user?.profileImage?.public_id) {
+    // Fetch the full user from the database
+    const dbUser = await findUserById(userId);
+    if (!dbUser) return unauthorized(res, "User not found");
+
+    if (dbUser.profileImage?.public_id) {
         try {
-            await deleteFromCloudinary(user.profileImage.public_id);
+            await deleteFromCloudinary(dbUser.profileImage.public_id);
         } catch (err) {
             console.error("Failed to delete old profile picture", err);
         }
@@ -42,24 +46,26 @@ const updateProfilePicture = async (req: Request, res: Response) => {
 
 const deleteProfilePicture = async (req: Request, res: Response) => {
 
-    const user = (req as CustomRequest).user;
+    const userId = (req as CustomRequest).user?._id;
 
-    if (!user) return unauthorized(res, "User not found");
+    if (!userId) return unauthorized(res, "User not found");
 
-    const userProfileDeleted = await deleteProfileFromUser(user);
+    // Fetch the full user from the database
+    const dbUser = await findUserById(userId);
+    if (!dbUser) return unauthorized(res, "User not found");
+
+    const userProfileDeleted = await deleteProfileFromUser(dbUser);
     if (!userProfileDeleted) return error(res, "Failed to delete user profile.");
 
-    if (user.profileImage.public_id) {
+    if (dbUser.profileImage?.public_id) {
         try {
-            await deleteFromCloudinary(user.profileImage.public_id);
+            await deleteFromCloudinary(dbUser.profileImage.public_id);
         } catch (err) {
             return error(res, `Failed to delete profile picture from cloudinary. Error: ${err}`);
         }
     }
 
-    user.profileImage.secure_url = userProfileDeleted.profileImage!.secure_url;
-
-    return success(res, "User profile deleted.", user);
+    return success(res, "User profile deleted.", userProfileDeleted);
 };
 
 export {

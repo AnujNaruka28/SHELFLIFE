@@ -9,7 +9,7 @@ const userSchema = z.object({
         secure_url: z.url().optional(),
         public_id: z.string().optional(),
     }).optional(),
-    role: z.enum(["admin", "member"]).default("member"),
+    role: z.enum(["admin", "member", "user"]).default("user"),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });

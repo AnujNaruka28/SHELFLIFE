@@ -35,9 +35,9 @@ async function uploadToCloudinary({
                                 
         return { secure_url: result.secure_url, public_id: result.public_id};
 
-    } catch (err) {
+    } catch (err: any) {
         unlinkSync(filePath);
-        throw new Error(`Failed to upload media: ${err}`);
+        throw new Error(`Failed to upload media: ${err.stack || err.message}`);
     }
   
 }

@@ -6,7 +6,6 @@ Pending Items from STRUCTURE.md
 
 Comprehensive Test Cases
 ==================================================
-
 1. Auth Routes
 ==================================================
 
