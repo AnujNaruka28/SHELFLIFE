@@ -7,6 +7,8 @@ import errorHandler from "./middlewares/error.js";
 import { connectToCloudinary } from "./config/cloudinary.js";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./open-api.json" with { type: "json" };
 
 const app = express();
 
@@ -57,6 +59,8 @@ app.get("/", (_req, res) => {
 app.get("/health-check", (_req, res) => {
     res.status(200).json({ status: "ok" });
 });
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/api/v1", routes.authRouter);
 app.use("/api/v1", routes.householdRouter);

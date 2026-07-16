@@ -1,0 +1,1066 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ShelfLife API",
+    "description": "API for ShelfLife - A food inventory management system to track items, reduce waste, and save money",
+    "version": "1.0.0",
+    "contact": {
+      "name": "ShelfLife Team",
+      "email": "shelflife.eco@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication and registration endpoints"
+    },
+    {
+      "name": "Households",
+      "description": "Household management endpoints"
+    },
+    {
+      "name": "Items",
+      "description": "Item inventory management endpoints"
+    },
+    {
+      "name": "Dashboard",
+      "description": "Dashboard statistics and analytics endpoints"
+    },
+    {
+      "name": "Profile",
+      "description": "User profile management endpoints"
+    }
+  ],
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login user",
+        "description": "Authenticate a user with email and password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid credentials"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register new user",
+        "description": "Register a new user with email verification via OTP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User already exists or invalid OTP"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/otp": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Send OTP for email verification",
+        "description": "Generate and send OTP to user email for registration verification",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OtpRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OtpResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User already exists"
+          }
+        }
+      }
+    },
+    "/api/v1/households": {
+      "post": {
+        "tags": ["Households"],
+        "summary": "Create household",
+        "description": "Create a new household for the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateHouseholdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Household created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User already belongs to a household"
+          },
+          "403": {
+            "description": "Invalid user"
+          }
+        }
+      }
+    },
+    "/api/v1/households/join": {
+      "post": {
+        "tags": ["Households"],
+        "summary": "Join household",
+        "description": "Join an existing household using invite code",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinHouseholdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Joined household successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid invite code or user already in household"
+          }
+        }
+      }
+    },
+    "/api/v1/households/leave": {
+      "post": {
+        "tags": ["Households"],
+        "summary": "Leave household",
+        "description": "Leave the current household",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Left household successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User is not in a household"
+          }
+        }
+      }
+    },
+    "/api/v1/households/me": {
+      "get": {
+        "tags": ["Households"],
+        "summary": "Get user's household",
+        "description": "Fetch the household the authenticated user belongs to",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Household fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Household"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Household does not exist"
+          }
+        }
+      }
+    },
+    "/api/v1/households/{id}/members": {
+      "get": {
+        "tags": ["Households"],
+        "summary": "Get household members",
+        "description": "Fetch all members of a specific household",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Household ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Members fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No members found"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+    "/api/v1/items": {
+      "get": {
+        "tags": ["Items"],
+        "summary": "Get items",
+        "description": "Fetch items with optional filtering and pagination",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by category"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["fresh", "expiring-soon", "expired", "used", "wasted"]
+            },
+            "description": "Filter by status"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No items found"
+          },
+          "400": {
+            "description": "User must belong to a household"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Items"],
+        "summary": "Create item",
+        "description": "Create a new item in the household",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User must belong to a household or invalid data"
+          }
+        }
+      }
+    },
+    "/api/v1/items/{id}": {
+      "put": {
+        "tags": ["Items"],
+        "summary": "Update item",
+        "description": "Update an existing item (only by creator)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Item ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Item is used, wasted or expired"
+          },
+          "401": {
+            "description": "Unauthorized - not the item creator"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Items"],
+        "summary": "Delete item",
+        "description": "Delete an item (only by creator)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Item ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Item deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - not the item creator"
+          }
+        }
+      }
+    },
+    "/api/v1/items/{id}/status": {
+      "patch": {
+        "tags": ["Items"],
+        "summary": "Update item status",
+        "description": "Update item status to used or wasted (only by creator)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Item ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status or user not found"
+          },
+          "401": {
+            "description": "Unauthorized - not the item creator"
+          }
+        }
+      }
+    },
+    "/api/v1/dashboard/stats": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get dashboard statistics",
+        "description": "Fetch statistics for the user's household",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardStats"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not in a household"
+          }
+        }
+      }
+    },
+    "/api/v1/dashboard/expiring": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get expiring items",
+        "description": "Fetch items expiring in the next 24 hours",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Expiring items fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Item"
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No expiring items found"
+          },
+          "400": {
+            "description": "User not in a household"
+          }
+        }
+      }
+    },
+    "/api/v1/change-profile": {
+      "put": {
+        "tags": ["Profile"],
+        "summary": "Update profile picture",
+        "description": "Upload and update user profile picture",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "profileImage": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": ["profileImage"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No profile image provided"
+          },
+          "401": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/api/v1/delete-profile": {
+      "delete": {
+        "tags": ["Profile"],
+        "summary": "Delete profile picture",
+        "description": "Delete user profile picture and revert to default",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": ["name", "email", "password", "otp"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          },
+          "otp": {
+            "type": "number"
+          }
+        }
+      },
+      "OtpRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string"
+              },
+              "user": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        }
+      },
+      "OtpResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "otp": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "CreateHouseholdRequest": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 3
+          }
+        }
+      },
+      "JoinHouseholdRequest": {
+        "type": "object",
+        "required": ["inviteCode"],
+        "properties": {
+          "inviteCode": {
+            "type": "string"
+          }
+        }
+      },
+      "HouseholdResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "household": {
+                "$ref": "#/components/schemas/Household"
+              },
+              "user": {
+                "$ref": "#/components/schemas/User"
+              },
+              "token": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "$ref": "#/components/schemas/User"
+              },
+              "token": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Household": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "inviteCode": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "householdId": {
+            "type": "string",
+            "nullable": true
+          },
+          "profileImage": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "public_id": {
+                "type": "string"
+              }
+            },
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateItemRequest": {
+        "type": "object",
+        "required": ["name", "quantity", "category", "expiryDate"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1
+          },
+          "category": {
+            "type": "string"
+          },
+          "expiryDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UpdateItemRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1
+          },
+          "category": {
+            "type": "string"
+          },
+          "expiryDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UpdateItemStatusRequest": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["used", "wasted"]
+          }
+        }
+      },
+      "Item": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "expiryDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["fresh", "expiring-soon", "expired", "used", "wasted"]
+          },
+          "householdId": {
+            "type": "string"
+          },
+          "addedBy": {
+            "type": "string"
+          },
+          "updatedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ItemsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              },
+              "total": {
+                "type": "number"
+              },
+              "page": {
+                "type": "number"
+              },
+              "pages": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "DashboardStats": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "totalItems": {
+                "type": "number"
+              },
+              "wasteScore": {
+                "type": "number"
+              },
+              "fresh": {
+                "type": "number"
+              },
+              "expiring": {
+                "type": "number"
+              },
+              "expired": {
+                "type": "number"
+              },
+              "wasted": {
+                "type": "number"
+              },
+              "used": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
