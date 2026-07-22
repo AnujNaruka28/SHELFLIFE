@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { isActiveRoute } from "../../../../utils/isActiveRoute";
 import { sidebarOptions } from "../../../../utils/sidebarOptions";
 import { RiDashboardHorizontalLine } from "react-icons/ri";
@@ -15,10 +15,11 @@ const icons = {
 }
 
 const SideNavOptions = () => {
+    const location = useLocation();
     return (
         <ul className="flex flex-col gap-2">
             {sidebarOptions.map((item) => {
-                const active = isActiveRoute(item.path, location.pathname);
+                let active = isActiveRoute(item.path, location.pathname);
                 return (
                     <li key={item.label}>
                         <Link to={item.path} className={`text-left px-3 py-2 rounded flex items-center gap-2

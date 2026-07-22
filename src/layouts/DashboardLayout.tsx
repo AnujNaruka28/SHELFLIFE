@@ -16,7 +16,7 @@ const DashboardLayout = () => {
 
             <Sidebar />
 
-            <article className="w-full min-[768px]:w-[80%] min-[1024px]:w-[84%] flex flex-col">
+            <section className="w-full min-[768px]:w-[80%] min-[1024px]:w-[84%] flex flex-col">
                 <nav className="w-full h-[60px] border-b border-border flex justify-between items-center px-4">
                     
                     <NavButton onClick={() => setOpen(true)} >
@@ -29,12 +29,10 @@ const DashboardLayout = () => {
                 
                 </nav>
 
-                <section className="w-full h-[calc(100vh-60px)]">
-
+                <div className="w-full h-[calc(100vh-60px)]">
                     <Outlet />
-                    
-                </section>
-            </article>
+                </div>
+            </section>
 
             <SidebarDrawer open={open} onClose={() => setOpen(false)} />
             
