@@ -1,9 +1,10 @@
 import StatusCard from "../components/cores/Dashboard/Home/StatusCard"
+import ItemTable from "../components/cores/Table/ItemTable"
 
 const CommonCard = ({ children, isTableBox }: { children: React.ReactNode, isTableBox: boolean }) => {
     return (
-        <article className={`w-full h-[50%] ${isTableBox ? "min-[768px]:h-[86%]" : "min-[768px]:h-[14%]"} bg-card shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] p-4
-        flex flex-col min-[768px]:flex-row gap-4`}>
+        <article className={`w-full h-[50%] ${isTableBox ? "min-[768px]:h-[86%]" : "min-[768px]:h-[14%] min-[768px]:flex-row"} bg-card shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] p-4
+        flex flex-col gap-4`}>
             {children}
         </article>
     )
@@ -34,15 +35,8 @@ const statusColor = {
 }
 
 const DashboardHome = () => {
-    return (
-        <div className="bg-muted w-full h-full overflow-x-hidden
-        flex flex-col items-start px-4 py-2 gap-2">
-            <h1 className="w-full text-muted-foreground font-semibold">
-                Dashboard
-            </h1>
-
-            
-            
+    return (     
+        <>
             <CommonCard isTableBox={false}>
                 {
                     stats.map(stat => (
@@ -57,13 +51,11 @@ const DashboardHome = () => {
             </CommonCard>
 
             <CommonCard isTableBox={true}>
-                <div>
-                    <h2>Recent Activity</h2>
-                </div>
+                <p className="text-sm text-muted-foreground font-semibold">Expires In 24 Hours</p>
+                <ItemTable data={[]} />
             </CommonCard>
 
-        </div>
-
+        </>
     )
 }
 

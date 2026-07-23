@@ -12,6 +12,8 @@ import Leaderboard from './pages/Leaderboard.tsx'
 import HomeLayout from './layouts/HomeLayout.tsx'
 import Auth from './pages/Auth.tsx'
 import Home from './pages/HomePage.tsx'
+import store from './lib/store.ts'
+import { Provider } from 'react-redux'
 
 const routes = createBrowserRouter([
   {
@@ -63,6 +65,8 @@ const routes = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={routes} />
+    <Provider store={store}>
+      <RouterProvider router={routes} />
+    </Provider>
   </StrictMode>,
 )
