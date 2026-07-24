@@ -14,6 +14,7 @@ import Auth from './pages/Auth.tsx'
 import Home from './pages/HomePage.tsx'
 import store from './lib/store.ts'
 import { Provider } from 'react-redux'
+import { ToastContainer } from 'react-toastify'
 
 const routes = createBrowserRouter([
   {
@@ -67,6 +68,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <RouterProvider router={routes} />
+      <ToastContainer/>
     </Provider>
   </StrictMode>,
 )

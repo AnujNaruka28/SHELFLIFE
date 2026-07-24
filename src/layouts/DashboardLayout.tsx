@@ -6,7 +6,7 @@ import SidebarDrawer from "../components/cores/Dashboard/Sidebar/SidebarDrawer";
 import Sidebar from "../components/cores/Dashboard/Sidebar/Sidebar";
 import { toggleSidebar } from "../lib/features/sideBarSlice";
 import { useDispatch, useSelector } from "react-redux";
-
+import { motion } from "framer-motion";
 
 const DashboardLayout = () => {
     const dispatch = useDispatch();
@@ -35,11 +35,15 @@ const DashboardLayout = () => {
                 </nav>
 
                 <div className="w-full h-[calc(100vh-60px)]">
-                    <div className="bg-muted w-full h-full overflow-x-hidden
+                    <div className="bg-muted w-full h-full overflow-hidden
                     flex flex-col items-start px-4 py-2 gap-2">
-                        <h1 className="w-full text-muted-foreground font-semibold">
+                        <motion.h1 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                        className="w-full text-muted-foreground font-semibold">
                             {feature.charAt(0).toUpperCase() + feature.slice(1)}
-                        </h1>
+                        </motion.h1>
                         <Outlet />
                     </div>
                 </div>

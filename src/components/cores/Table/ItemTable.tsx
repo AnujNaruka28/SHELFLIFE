@@ -12,9 +12,11 @@ import { Row } from "./Rows";
 
 interface ItemTableProps {
     data: Item[];
+    itemsLoading: boolean;
+    itemsError: boolean;
 }
 
-const ItemTable = ({ data }: ItemTableProps) => {
+const ItemTable = ({ data, itemsLoading, itemsError }: ItemTableProps) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -27,21 +29,24 @@ const ItemTable = ({ data }: ItemTableProps) => {
         setPage(0);
     };
 
+    const tableColumns = data.length > 0 ? Object.keys(data[0]) : [];
+
     return (
-        <Paper sx={{ width: '100%' }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
+        <Paper sx={{ width: '100%', height: '100%' }}>
+            <TableContainer sx={{ height: '80%' }}>
                 <Table stickyHeader aria-label="collapsible table">
                     <TableHead>
                         <TableRow>
                             <TableCell />
-                            <TableCell>ID</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell align="right">Quantity</TableCell>
+                            {tableColumns.map((column) => (
+                                <TableCell key={column}>{column}</TableCell>
+                            ))}
+                            {/* <TableCell align="right">Quantity</TableCell>
                             <TableCell>Category</TableCell>
                             <TableCell>Expiry Date</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell>Added By</TableCell>
-                            <TableCell>Updated By</TableCell>
+                            <TableCell>Updated By</TableCell> */}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -53,7 +58,8 @@ const ItemTable = ({ data }: ItemTableProps) => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <TablePagination
+            <TablePagination 
+                className='h-[20%]'
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
                 count={data.length}
