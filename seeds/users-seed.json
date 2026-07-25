@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Anuj Naruka",
+    "email": "anujnaruka28@gmail.com",
+    "password": "password123"
+  },
+  {
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@example.com",
+    "password": "password123"
+  },
+  {
+    "name": "Michael Chen",
+    "email": "michael.chen@example.com",
+    "password": "password123"
+  },
+  {
+    "name": "Emily Rodriguez",
+    "email": "emily.rodriguez@example.com",
+    "password": "password123"
+  },
+  {
+    "name": "David Thompson",
+    "email": "david.thompson@example.com",
+    "password": "password123"
+  }
+]

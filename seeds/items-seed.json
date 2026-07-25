@@ -1,0 +1,107 @@
+[
+  {
+    "name": "Organic Milk",
+    "quantity": 2,
+    "category": "dairy",
+    "expiryDate": "2026-07-28",
+    "status": "expiring-soon"
+  },
+  {
+    "name": "Chicken Breast",
+    "quantity": 1,
+    "category": "meat",
+    "expiryDate": "2026-07-30",
+    "status": "fresh"
+  },
+  {
+    "name": "Bananas",
+    "quantity": 6,
+    "category": "produce",
+    "expiryDate": "2026-07-26",
+    "status": "expiring-soon"
+  },
+  {
+    "name": "Greek Yogurt",
+    "quantity": 3,
+    "category": "dairy",
+    "expiryDate": "2026-08-05",
+    "status": "fresh"
+  },
+  {
+    "name": "Whole Wheat Bread",
+    "quantity": 1,
+    "category": "pantry",
+    "expiryDate": "2026-07-25",
+    "status": "expired"
+  },
+  {
+    "name": "Frozen Peas",
+    "quantity": 2,
+    "category": "frozen",
+    "expiryDate": "2026-12-15",
+    "status": "fresh"
+  },
+  {
+    "name": "Ground Beef",
+    "quantity": 1,
+    "category": "meat",
+    "expiryDate": "2026-07-27",
+    "status": "expiring-soon"
+  },
+  {
+    "name": "Apples",
+    "quantity": 8,
+    "category": "produce",
+    "expiryDate": "2026-08-10",
+    "status": "fresh"
+  },
+  {
+    "name": "Cheddar Cheese",
+    "quantity": 1,
+    "category": "dairy",
+    "expiryDate": "2026-08-20",
+    "status": "fresh"
+  },
+  {
+    "name": "Spinach",
+    "quantity": 2,
+    "category": "produce",
+    "expiryDate": "2026-07-24",
+    "status": "expired"
+  },
+  {
+    "name": "Salmon Fillet",
+    "quantity": 2,
+    "category": "meat",
+    "expiryDate": "2026-07-29",
+    "status": "expiring-soon"
+  },
+  {
+    "name": "Orange Juice",
+    "quantity": 1,
+    "category": "dairy",
+    "expiryDate": "2026-08-01",
+    "status": "fresh"
+  },
+  {
+    "name": "Rice",
+    "quantity": 5,
+    "category": "pantry",
+    "expiryDate": "2027-01-15",
+    "status": "fresh"
+  },
+  {
+    "name": "Ice Cream",
+    "quantity": 1,
+    "category": "frozen",
+    "expiryDate": "2026-09-30",
+    "status": "fresh"
+  },
+  {
+    "name": "Broccoli",
+    "quantity": 3,
+    "category": "produce",
+    "expiryDate": "2026-07-28",
+    "status": "expiring-soon"
+  }
+]
