@@ -5,14 +5,23 @@ import CTAButton from "../common/CTAButton";
 import type { JoinDialogProps } from "../../types/JoinDialogProps";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
+import { useSelector } from "react-redux";
 
 const JoinDialog = ({ title, children }: JoinDialogProps) => {
   const [open, setOpen] = useState(false);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
   const navigate = useNavigate();
+  const { token } = useSelector((state: any) => state.auth);
+
+  const handleOpen = () => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    setOpen(true);
+  };
+
+  const handleClose = () => setOpen(false);
 
   const childWithOnClick = React.cloneElement(children, {
     onClick: handleOpen

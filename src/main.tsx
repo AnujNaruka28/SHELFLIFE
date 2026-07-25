@@ -12,9 +12,11 @@ import Leaderboard from './pages/Leaderboard.tsx'
 import HomeLayout from './layouts/HomeLayout.tsx'
 import Auth from './pages/Auth.tsx'
 import Home from './pages/HomePage.tsx'
-import store from './lib/store.ts'
+import store, { persistor } from './lib/store.ts'
 import { Provider } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
+import ProtectedRoute from './components/common/ProtectedRoute'
+import { PersistGate } from 'redux-persist/integration/react'
 
 const routes = createBrowserRouter([
   {
@@ -38,7 +40,11 @@ const routes = createBrowserRouter([
 
   {
     path: '/dashboard',
-    element: <DashboardLayout/>,
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout/>
+      </ProtectedRoute>
+    ),
     children: [
       {
         index:true,
@@ -67,8 +73,10 @@ const routes = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
-      <RouterProvider router={routes} />
-      <ToastContainer/>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={routes} />
+        <ToastContainer/>
+      </PersistGate>
     </Provider>
   </StrictMode>,
 )

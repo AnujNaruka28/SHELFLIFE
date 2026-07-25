@@ -4,18 +4,20 @@ import type { AuthPropsType } from "../types/AuthPropsType";
 import StyledFormControl from "../components/common/StyledFormControl";
 import { useForm } from "react-hook-form";
 import type { AuthFormValue } from "../types/AuthFormValue";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../lib/store";
 import { loginAction, signupAction } from "../lib/actions/authAction";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Loader from "../components/common/Loader";
+import useAuthAndHouseholdCheck from "../hooks/useAuthAndHouseholdCheck";
 
 const useAppDispatch = () => useDispatch<AppDispatch>();
 
 const Auth = (AuthProps: AuthPropsType) => {
 
     const dispatch = useAppDispatch();
-    const { loading,token,user } = useSelector((state: any) => state.auth);
+    const {hasHousehold,loading,token} = useAuthAndHouseholdCheck();
     const navigate = useNavigate();
 
     const {
@@ -27,16 +29,16 @@ const Auth = (AuthProps: AuthPropsType) => {
     } = useForm<AuthFormValue>();
 
     useEffect(() => {
-        if (token && user) {
+        if (token && hasHousehold) {
             navigate("/dashboard");
         } 
-    }, [token,user])
+    }, [token,hasHousehold,navigate])
 
     const onSubmit = (data: AuthFormValue) => {
         if (AuthProps.isLogin) {
             dispatch(loginAction({email: data.email, password: data.password}, navigate));
         } else {
-            dispatch(signupAction(data.name!, data.email, data.password));
+            dispatch(signupAction(data.name!, data.email, data.password, navigate));
         }
     };
 
@@ -44,7 +46,6 @@ const Auth = (AuthProps: AuthPropsType) => {
         <form
         className="flex flex-col gap-4 w-full h-full justify-center"
         onSubmit={handleSubmit(onSubmit)}>
-
             {
                 !AuthProps.isLogin && (
                     <StyledFormControl variant="filled">
@@ -106,8 +107,16 @@ const Auth = (AuthProps: AuthPropsType) => {
                 text={AuthProps.isLogin ? "Login" : "Sign Up"}
                 className="mt-4 py-1"
                 type="submit"
-                reactNode={loading ? <></> : undefined}
+                reactNode={loading ? <Loader/> : undefined}
             />
+
+            <div className="flex justify-end">
+                <Link to={AuthProps.isLogin ? "/register" : "/login"} className="text-blue-500 hover:underline">
+                    {
+                        AuthProps.isLogin ? "Don't have an account?" : "Already have an account?"
+                    }
+                </Link>
+            </div>
         </form>
     )
 }

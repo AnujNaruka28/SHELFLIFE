@@ -14,13 +14,13 @@ const loginAction = (loginData: { email: string; password: string }, navigate: N
                 APIMethods.POST,
                 loginData
             );
-
-            console.log(response);
             
             dispatch(authSuccess({
-                user: response.data.user,
-                token: response.data.token
+                user: response.data.data.user,
+                token: response.data.data.token
             }));
+
+            navigate('/dashboard');
             
             toast.success("Login successful");
         } catch (error) {
@@ -30,7 +30,7 @@ const loginAction = (loginData: { email: string; password: string }, navigate: N
     };
 };
 
-const signupAction = (name: string, email: string, password: string) => {
+const signupAction = (name: string, email: string, password: string, navigate: NavigateFunction) => {
     return async (dispatch: any) => {
         try {
             dispatch(authStart());
@@ -42,9 +42,11 @@ const signupAction = (name: string, email: string, password: string) => {
             );
             
             dispatch(authSuccess({
-                user: response.data.user,
-                token: response.data.token
+                user: response.data.data.user,
+                token: response.data.data.token
             }));
+
+            navigate('/dashboard');
             
             toast.success("Signup successful");
         } catch (error) {

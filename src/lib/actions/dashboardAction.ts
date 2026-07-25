@@ -15,7 +15,7 @@ const statsAction = () => {
                 APIMethods.GET
             )
             
-            dispatch(setDashboard(statsResponse.data));
+            dispatch(setDashboard(statsResponse.data.data));
 
             toast.success("Dashboard stats fetched successfully");
             
@@ -38,7 +38,7 @@ const expiringItemsAction = () => {
                 APIMethods.GET
             )
 
-            dispatch(setExpiringItems(expiringItemsResponse.data));
+            dispatch(setExpiringItems(expiringItemsResponse.data.data));
 
             toast.success("Expiring items fetched successfully");
             

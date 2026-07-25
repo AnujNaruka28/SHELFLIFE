@@ -26,7 +26,6 @@ export function Row(props: RowProps) {
         "used": "#3b82f6",
         "wasted": "#6b7280"
     };
-
     return (
         <React.Fragment>
             <TableRow sx={{ '& > .MuiTableCell-root': { borderBottom: 'unset' } }}>
@@ -43,7 +42,7 @@ export function Row(props: RowProps) {
                     {row._id}
                 </TableCell>
                 <TableCell>{row.name}</TableCell>
-                <TableCell align="right">{row.quantity}</TableCell>
+                <TableCell>{row.quantity}</TableCell>
                 <TableCell>{row.category.charAt(0).toUpperCase() + row.category.slice(1)}</TableCell>
                 <TableCell>{new Date(row.expiryDate).toLocaleDateString()}</TableCell>
                 <TableCell>

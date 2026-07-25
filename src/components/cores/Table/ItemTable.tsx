@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 import type { Item } from "../../../types/Item";
 import { Row } from "./Rows";
+import Loader from '../../common/Loader';
 
 interface ItemTableProps {
     data: Item[];
@@ -29,45 +30,59 @@ const ItemTable = ({ data, itemsLoading, itemsError }: ItemTableProps) => {
         setPage(0);
     };
 
-    const tableColumns = data.length > 0 ? Object.keys(data[0]) : [];
+    const tableColumns = ["Id", "Name", "Quantity", "Category", "Expiry","Status", "Added By", "Updated By"];
 
     return (
         <Paper sx={{ width: '100%', height: '100%' }}>
-            <TableContainer sx={{ height: '80%' }}>
-                <Table stickyHeader aria-label="collapsible table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell />
-                            {tableColumns.map((column) => (
-                                <TableCell key={column}>{column}</TableCell>
-                            ))}
-                            {/* <TableCell align="right">Quantity</TableCell>
-                            <TableCell>Category</TableCell>
-                            <TableCell>Expiry Date</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Added By</TableCell>
-                            <TableCell>Updated By</TableCell> */}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => (
-                                <Row key={row._id} row={row} />
-                            ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination 
-                className='h-[20%]'
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+
+
+            {
+                itemsLoading ? (<Loader/>) : 
+                itemsError ? (
+                    <></> 
+                ) : (
+                    data.length > 0 ? (
+                    
+                    <> 
+                        <TableContainer sx={{ height: '80%' }}>
+                            <Table stickyHeader aria-label="collapsible table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell />
+                                        {tableColumns.map((column) => (
+                                            <TableCell key={column}>{column}</TableCell>
+                                        ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        data
+                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            .map((row) => (
+                                                <Row key={row._id} row={row} />
+                                            ))
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination 
+                            className='h-[20%]'
+                            rowsPerPageOptions={[10, 25, 100]}
+                            component="div"
+                            count={data.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        /> 
+                    </>
+                    ) : (
+                        <div className='h-full flex items-center justify-center'>
+                            No data available
+                        </div>
+                    )
+                )
+            }
         </Paper>
     );
 };

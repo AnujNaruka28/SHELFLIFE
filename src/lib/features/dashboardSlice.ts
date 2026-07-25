@@ -3,13 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialStatsState = {
     totalItems: 0,
     wasteScore: 0,
-    stats: {
-        fresh: 0,
-        expiring: 0,
-        expired: 0,
-        wasted: 0,
-        used: 0
-    },
+    fresh: 0,
+    expiring: 0,
+    expired: 0,
+    wasted: 0,
+    used: 0,
     statsLoading: false,
     statsFetchError: false   
 }
