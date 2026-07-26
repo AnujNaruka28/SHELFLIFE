@@ -92,13 +92,13 @@ const leaveHousehold = async (userId: Types.ObjectId, householdId: Types.ObjectI
 const findUserHousehold = async (user: { _id: Types.ObjectId }) => {
     const existingHousehold = await HouseHold.findOne({
         members: user._id,
-    }).populate("members", "name email role");
+    }).populate("members", "name email role profileImage");
 
     return existingHousehold;
 };
 
 const getMembersOfHousehold = async (householdId: string): Promise<IHouseHold> => {
-    const houseHold = await HouseHold.findById(householdId).populate("members", "name email role");
+    const houseHold = await HouseHold.findById(householdId).populate("members", "name email role profileImage");
 
     if (!houseHold) {
         throw new Error("Household not found");

@@ -15,6 +15,9 @@ const seedUsers = async () => {
       usersData.map(async (user) => ({
         ...user,
         password: await bcrypt.hash(user.password, 10),
+        profileImage: {
+          secure_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`,
+        }
       }))
     );
 
@@ -44,10 +47,10 @@ const seedHousehold = async (users: any[]) => {
       wasteScore: 0,
     });
 
-    // Update all users with householdId
+    // Update all users with householdId and role
     await User.updateMany(
       { _id: { $in: users.map((user) => user._id) } },
-      { householdId: household._id }
+      { householdId: household._id, role: "member" }
     );
 
     // Set admin role for the creator
