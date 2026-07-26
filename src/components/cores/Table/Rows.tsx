@@ -13,10 +13,11 @@ import type { Item } from "../../../types/Item";
 
 interface RowProps {
     row: Item;
+    index: number;
 }
 
 export function Row(props: RowProps) {
-    const { row } = props;
+    const { row, index } = props;
     const [open, setOpen] = React.useState(false);
 
     const statusColors = {
@@ -39,7 +40,7 @@ export function Row(props: RowProps) {
                     </IconButton>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                    {row._id}
+                    {index}
                 </TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.quantity}</TableCell>

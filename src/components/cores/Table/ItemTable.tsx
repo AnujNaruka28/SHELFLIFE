@@ -58,8 +58,8 @@ const ItemTable = ({ data, itemsLoading, itemsError }: ItemTableProps) => {
                                     {
                                         data
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((row) => (
-                                                <Row key={row._id} row={row} />
+                                            .map((row, index) => (
+                                                <Row key={row._id} row={row} index={index+1} />
                                             ))
                                     }
                                 </TableBody>

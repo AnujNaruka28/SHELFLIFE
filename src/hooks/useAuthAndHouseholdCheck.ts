@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { APIMethods,APIService } from "../lib/APIService";
 import { API_HOUSEHOLD } from "../lib/apis";
 import { toast } from "react-toastify";
+import { setInviteCode } from "../lib/features/authSlice";
+import { setMembers } from "../lib/features/membersSlice";
 
 const useAuthAndHouseholdCheck = () => {
     
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
     const { token } = useSelector((state: any) => state.auth);
     const [hasHousehold, setHasHousehold] = useState<boolean | null>(null);
     const [loading,setLoading] = useState(true);
@@ -30,8 +33,9 @@ const useAuthAndHouseholdCheck = () => {
                     APIMethods.GET
                 );
                 
-                if (response.data) {
+                if (response.data.data) {
                     setHasHousehold(true);
+                    dispatch(setInviteCode(response.data.data.inviteCode));
                 } else {
                     navigate("/");
                 }
@@ -44,7 +48,7 @@ const useAuthAndHouseholdCheck = () => {
         };
 
         checkAuthAndHousehold();
-    }, [token, navigate, location.pathname]);
+    }, [token, navigate, location.pathname, dispatch]);
 
     return {
         hasHousehold,
