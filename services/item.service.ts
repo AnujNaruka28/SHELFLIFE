@@ -6,7 +6,11 @@ import HouseHold from "../models/HouseHold.js";
 const findItems = async (houseId: Types.ObjectId, filters?: Record<string, string>, page: number = 1, limit: number = 10) => {
     try {
         const offset = (page - 1) * limit;
-        return await Item.find({ ...filters, householdId: houseId }).skip(offset).limit(limit);
+        return await Item.find({ ...filters, householdId: houseId })
+            .skip(offset)
+            .limit(limit)
+            .populate("addedBy", "name email")
+            .populate("updatedBy", "name email");
     } catch (err) {
         return new Error(`Failed to fetch items : ${err}`);
     }
