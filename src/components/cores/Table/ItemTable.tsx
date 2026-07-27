@@ -15,19 +15,26 @@ interface ItemTableProps {
     data: Item[];
     itemsLoading: boolean;
     itemsError: boolean;
+    onPageChange?: (page: number) => void;
+    onRowsPerPageChange?: (limit: number) => void;
+    currentPage?: number;
+    currentLimit?: number;
 }
 
-const ItemTable = ({ data, itemsLoading, itemsError }: ItemTableProps) => {
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPageChange, currentPage, currentLimit }: ItemTableProps) => {
+    const [page, setPage] = React.useState((currentPage || 1)-1);
+    const [rowsPerPage, setRowsPerPage] = React.useState(currentLimit || 10);
 
     const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage);
+        onPageChange(newPage + 1);
     };
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(+event.target.value);
+        const newRowsPerPage = +event.target.value;
+        setRowsPerPage(newRowsPerPage);
         setPage(0);
+        onRowsPerPageChange(newRowsPerPage);
     };
 
     const tableColumns = ["Id", "Name", "Quantity", "Category", "Expiry","Status", "Added By", "Updated By"];

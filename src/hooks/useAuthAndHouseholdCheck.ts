@@ -5,7 +5,6 @@ import { APIMethods,APIService } from "../lib/APIService";
 import { API_HOUSEHOLD } from "../lib/apis";
 import { toast } from "react-toastify";
 import { setInviteCode } from "../lib/features/authSlice";
-import { setMembers } from "../lib/features/membersSlice";
 
 const useAuthAndHouseholdCheck = () => {
     
