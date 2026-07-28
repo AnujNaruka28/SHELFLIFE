@@ -19,8 +19,8 @@ const CommonCard = ({ children, isTableBox }: { children: React.ReactNode, isTab
 
 const statusColor = {
     "Fresh": "--chart-1",
-    "Expired": "--chart-2",
-    "Expiring Soon": "--chart-3"
+    "Expiring Soon": "--chart-2",
+    "Expired": "--chart-3"
 }
 
 const DashboardHome = () => {
