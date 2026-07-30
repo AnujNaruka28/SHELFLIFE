@@ -30,13 +30,13 @@ const getItems = async (req: Request, res: Response, next: NextFunction) => {
     const itemsFiltered = await findItems(householdId, filters, pageInt, limitInt);
 
     if (itemsFiltered instanceof Error) return next(itemsFiltered);
-    if (itemsFiltered.length === 0) return noContent(res);
+    if (itemsFiltered.items.length === 0) return noContent(res);
 
     return success(res, "Items Fetched Successfully.", {
-        ...itemsFiltered,
-        total: itemsFiltered.length,
+        data: itemsFiltered.items,
+        total: itemsFiltered.total,
         page: pageInt,
-        pages: Math.ceil(itemsFiltered.length / limitInt),
+        pages: Math.ceil(itemsFiltered.total / limitInt),
     });
 };
 

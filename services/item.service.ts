@@ -6,11 +6,15 @@ import HouseHold from "../models/HouseHold.js";
 const findItems = async (houseId: Types.ObjectId, filters?: Record<string, string>, page: number = 1, limit: number = 10) => {
     try {
         const offset = (page - 1) * limit;
-        return await Item.find({ ...filters, householdId: houseId })
+        const items = await Item.find({ ...filters, householdId: houseId })
             .skip(offset)
             .limit(limit)
             .populate("addedBy", "name email")
             .populate("updatedBy", "name email");
+        
+        const total = await Item.countDocuments({ ...filters, householdId: houseId });
+        
+        return { items, total };
     } catch (err) {
         return new Error(`Failed to fetch items : ${err}`);
     }
@@ -18,7 +22,7 @@ const findItems = async (houseId: Types.ObjectId, filters?: Record<string, strin
 
 const saveItem = async (item: Partial<IItem>) => {
     try {
-        return await Item.create({ ...item, updatedBy: item.addedBy });
+        return (await Item.create({ ...item, updatedBy: item.addedBy })).populate("addedBy updatedBy");
     } catch (err) {
         return new Error(`Failed to save item in DB : ${err}`);
     }
