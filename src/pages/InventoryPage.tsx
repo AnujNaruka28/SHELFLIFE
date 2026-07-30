@@ -16,6 +16,7 @@ const InventoryPage = () => {
     const [limit, setLimit] = useState(10);
     const [category, setCategory] = useState('');
     const [status, setStatus] = useState('');   
+    const [refetchTrigger,setRefechTrigger] = useState(0);
 
     const debouncedCategory = useDebounce(category, 500);
     const debouncedStatus = useDebounce(status, 500);
@@ -32,7 +33,11 @@ const InventoryPage = () => {
         }
     }
 
-    const { items, loading, error } = useSelector((state: any) => state.items);
+    const handleItemCreated = () => {
+        setRefechTrigger(prev => prev + 1);
+    }
+
+    const { totalItems, items, loading, error } = useSelector((state: any) => state.items);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -40,7 +45,7 @@ const InventoryPage = () => {
         if (debouncedCategory) queries.category = debouncedCategory;
         if (debouncedStatus) queries.status = debouncedStatus;
         dispatch(getItemsAction(queries));
-    }, [debouncedCategory, debouncedStatus, page, limit, dispatch])
+    }, [debouncedCategory, debouncedStatus, page, limit, dispatch,refetchTrigger])
     return (
         <div className="w-full h-full flex flex-col gap-2">
 
@@ -92,7 +97,7 @@ const InventoryPage = () => {
 
                 </div>
 
-                <LazyItemDialog title="Add Item" mode="create">
+                <LazyItemDialog title="Add Item" mode="create" onSuccess={handleItemCreated}>
                     <CTAButton
                         text="Add Item"
                         className="py-1"
@@ -110,6 +115,7 @@ const InventoryPage = () => {
             onRowsPerPageChange={setLimit}
             currentPage={page}
             currentLimit={limit}
+            totalItems={totalItems}
             />
 
 

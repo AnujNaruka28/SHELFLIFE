@@ -19,9 +19,10 @@ interface ItemTableProps {
     onRowsPerPageChange?: (limit: number) => void;
     currentPage?: number;
     currentLimit?: number;
+    totalItems?: number;
 }
 
-const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPageChange, currentPage, currentLimit }: ItemTableProps) => {
+const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPageChange, currentPage, currentLimit, totalItems }: ItemTableProps) => {
     const [page, setPage] = React.useState((currentPage || 1)-1);
     const [rowsPerPage, setRowsPerPage] = React.useState(currentLimit || 10);
 
@@ -63,9 +64,7 @@ const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPage
                                 </TableHead>
                                 <TableBody>
                                     {
-                                        data
-                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((row, index) => (
+                                        data.map((row, index) => (
                                                 <Row key={row._id} row={row} index={index+1} />
                                             ))
                                     }
@@ -76,7 +75,7 @@ const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPage
                             className='h-[20%]'
                             rowsPerPageOptions={[10, 25, 100]}
                             component="div"
-                            count={data.length}
+                            count={totalItems || 0}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             onPageChange={handleChangePage}

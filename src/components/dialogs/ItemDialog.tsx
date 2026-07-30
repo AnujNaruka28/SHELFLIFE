@@ -8,11 +8,15 @@ import type { ItemFormValue } from "../../types/ItemFormValue";
 import NumberField from "../common/NumberField";
 import { ConfigProvider, DatePicker } from 'antd';
 import dayjs from 'dayjs';
+import { useDispatch } from "react-redux";
+import { createItemAction } from "../../lib/actions/itemsAction";
+import type { AppDispatch } from "../../lib/store";
+const useAppDispatch = () => useDispatch<AppDispatch>();
 
-
-const ItemDailog = ({title, children, mode = "create"} : ItemDialogProps) => {
+const ItemDailog = ({title, children, mode = "create", onSuccess} : ItemDialogProps) => {
 
     const [open,handleOpen] = useState(false);
+    const dispatch = useAppDispatch();
 
     const {
         register,
@@ -37,7 +41,9 @@ const ItemDailog = ({title, children, mode = "create"} : ItemDialogProps) => {
     const handleClose = () => handleOpen(false);
 
     const onSubmit = (data: ItemFormValue) => {
-        console.log(data);
+        dispatch(createItemAction(data));
+        handleClose();
+        onSuccess?.();
     };
 
     const categories = [
@@ -121,7 +127,6 @@ const ItemDailog = ({title, children, mode = "create"} : ItemDialogProps) => {
                                         <OutlinedInput
                                             placeholder="Enter item name"
                                             id="item-name"
-                                            name="item-name"
                                             sx={{
                                                 '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
                                                     borderColor: 'var(--primary)'
@@ -188,6 +193,8 @@ const ItemDailog = ({title, children, mode = "create"} : ItemDialogProps) => {
                                                     size="small"
                                                     min={1}
                                                     max={100}
+                                                    value={field.value}
+                                                    onValueChange={field.onChange}
                                                 />
                                             )}
                                         />

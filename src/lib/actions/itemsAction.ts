@@ -1,25 +1,26 @@
 import { toast } from "react-toastify";
 import { API_ITEMS } from "../apis";
 import { APIMethods, APIService } from "../APIService";
-import { failGetItems, getItems, setItems } from "../features/itemsSlice";
+import { createItemStart, failGetItems, failToCreateItem, getItemsStart, itemCreatedSuccess, setItems } from "../features/itemsSlice";
+import type { ItemFormValue } from "../../types/ItemFormValue";
 
-const getItemsAction = (queries: {category: string, status: string, page: number, limit: number}) => {
+const getItemsAction = (queries: {category?: string, status?: string, page: number, limit: number}) => {
     return async (dispatch: any) => {
         try {
-            dispatch(getItems());
+            dispatch(getItemsStart());
 
             const itemResponse = await APIService(
                 API_ITEMS.items,
                 APIMethods.GET,
-                null,
+                undefined,
                 queries
             );
 
-            // Convert object with numeric keys to array
-            const itemsArray = Object.values(itemResponse.data.data).filter(
-                (item: any) => typeof item === 'object' && item !== null
-            );
-            dispatch(setItems(itemsArray));
+            // API now returns { data: { data: items, total, page, pages } }
+            const itemsArray = itemResponse.data.data.data;
+            const totalItems = itemResponse.data.data.total;
+            
+            dispatch(setItems({ items: itemsArray, totalItems }));
             toast.success("Items loaded.");
 
         } catch (error) {
@@ -29,7 +30,30 @@ const getItemsAction = (queries: {category: string, status: string, page: number
     }
 };
 
-const createItemAction = () => {};
+const createItemAction = (itemData: ItemFormValue) => {
+
+    return async (dispatch: any) => {
+        try {
+            dispatch(createItemStart());
+
+            const itemResponse = await APIService(
+                API_ITEMS.items,
+                APIMethods.POST,
+                itemData
+            );
+
+            if (itemResponse.data.success) {
+                dispatch(itemCreatedSuccess());
+                toast.success("Item created.");
+            }
+
+        } catch (error) {
+            dispatch(failToCreateItem());
+            toast.error("Item failed to create.");
+        }
+    }
+
+};
 
 const updateItemByIdAction = () => {};
 

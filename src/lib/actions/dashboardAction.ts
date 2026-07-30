@@ -38,7 +38,11 @@ const expiringItemsAction = () => {
                 APIMethods.GET
             )
 
-            dispatch(setExpiringItems(expiringItemsResponse.data.data));
+            if(expiringItemsResponse.status === 204) {
+                dispatch(setExpiringItems([]));
+            } else {
+                dispatch(setExpiringItems(expiringItemsResponse.data.data));
+            }
 
             toast.success("Expiring items fetched successfully");
             
