@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { ItemDialogProps } from "../../types/ItemDialogProps";
 import { AnimatePresence, motion } from "motion/react";
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, OutlinedInput, Select } from "@mui/material";
@@ -9,11 +9,11 @@ import NumberField from "../common/NumberField";
 import { ConfigProvider, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import { useDispatch } from "react-redux";
-import { createItemAction } from "../../lib/actions/itemsAction";
+import { createItemAction, updateItemByIdAction } from "../../lib/actions/itemsAction";
 import type { AppDispatch } from "../../lib/store";
 const useAppDispatch = () => useDispatch<AppDispatch>();
 
-const ItemDailog = ({title, children, mode = "create", onSuccess} : ItemDialogProps) => {
+const ItemDailog = ({title, children, mode = "create", onSuccess, item} : ItemDialogProps) => {
 
     const [open,handleOpen] = useState(false);
     const dispatch = useAppDispatch();
@@ -22,11 +22,17 @@ const ItemDailog = ({title, children, mode = "create", onSuccess} : ItemDialogPr
         register,
         handleSubmit,
         control,
+        reset,
         formState : {
             errors
         }
     } = useForm<ItemFormValue>({
-        defaultValues: {
+        defaultValues: mode === "edit" && item ? {
+            name: item.name,
+            category: item.category,
+            expiryDate: item.expiryDate.toString(),
+            quantity: item.quantity
+        } : {
             name: '',
             category: 'other',
             expiryDate: '',
@@ -34,16 +40,42 @@ const ItemDailog = ({title, children, mode = "create", onSuccess} : ItemDialogPr
         }
     });
 
+    useEffect(() => {
+        if (mode === "edit" && item) {
+            reset({
+                name: item.name,
+                category: item.category,
+                expiryDate: item.expiryDate.toString(),
+                quantity: item.quantity
+            })
+        } else {
+            reset({
+                name: '',
+                category: 'other',
+                expiryDate: '',
+                quantity: 1
+            })
+        }
+    }, [mode, item, reset]);
+
     const childWithOnClick = React.cloneElement(children as React.ReactElement, {
         onClick: handleOpen
     } as any);
 
     const handleClose = () => handleOpen(false);
 
-    const onSubmit = (data: ItemFormValue) => {
-        dispatch(createItemAction(data));
-        handleClose();
-        onSuccess?.();
+    const onSubmit = async (data: ItemFormValue) => {
+        let success = false;
+        if(mode === "create") {
+            success = await dispatch(createItemAction(data)) || false;
+        } else if(mode === "edit" && item) {
+            // TODO: Implement update item action
+            success = await dispatch(updateItemByIdAction({id: item._id, data})) || false;
+        }
+        if(success) {
+            handleClose();
+            onSuccess?.();
+        }
     };
 
     const categories = [
@@ -212,7 +244,7 @@ const ItemDailog = ({title, children, mode = "create", onSuccess} : ItemDialogPr
                                 }}
                             >
                                 <CTAButton
-                                    text="Add"
+                                    text={mode === "create" ? "Add" : "Edit"}
                                     type="submit"
                                     form="item-form"
                                     className="px-4 py-2 w-[90%]"

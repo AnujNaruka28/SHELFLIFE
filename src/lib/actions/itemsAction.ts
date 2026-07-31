@@ -1,13 +1,13 @@
 import { toast } from "react-toastify";
 import { API_ITEMS } from "../apis";
 import { APIMethods, APIService } from "../APIService";
-import { createItemStart, failGetItems, failToCreateItem, getItemsStart, itemCreatedSuccess, setItems } from "../features/itemsSlice";
+import { itemStart, itemFail, itemSuccess, setItems } from "../features/itemsSlice";
 import type { ItemFormValue } from "../../types/ItemFormValue";
 
 const getItemsAction = (queries: {category?: string, status?: string, page: number, limit: number}) => {
     return async (dispatch: any) => {
         try {
-            dispatch(getItemsStart());
+            dispatch(itemStart());
 
             const itemResponse = await APIService(
                 API_ITEMS.items,
@@ -24,7 +24,7 @@ const getItemsAction = (queries: {category?: string, status?: string, page: numb
             toast.success("Items loaded.");
 
         } catch (error) {
-            dispatch(failGetItems());
+            dispatch(itemFail());
             toast.error("Items failed to fetch.");
         }
     }
@@ -34,7 +34,7 @@ const createItemAction = (itemData: ItemFormValue) => {
 
     return async (dispatch: any) => {
         try {
-            dispatch(createItemStart());
+            dispatch(itemStart());
 
             const itemResponse = await APIService(
                 API_ITEMS.items,
@@ -42,26 +42,99 @@ const createItemAction = (itemData: ItemFormValue) => {
                 itemData
             );
 
-            if (itemResponse.data.success) {
-                dispatch(itemCreatedSuccess());
+            if (itemResponse.data.status === "success") {
+                dispatch(itemSuccess());
                 toast.success("Item created.");
+                return true;
             }
 
         } catch (error) {
-            dispatch(failToCreateItem());
+            dispatch(itemFail());
             toast.error("Item failed to create.");
+            return false;
         }
     }
 
 };
 
-const updateItemByIdAction = () => {};
+const updateItemByIdAction = (payload: {id: string, data: ItemFormValue}) => {
+    return async (dispatch: any) => {
+        try {
+            dispatch(itemStart());
 
-const deleteItemByIdAction = () => {};
+            const itemResponse = await APIService(
+                API_ITEMS.itemById(payload.id),
+                APIMethods.PUT,
+                payload.data
+            );
+
+            if (itemResponse.data.status === "success") {
+                dispatch(itemSuccess());
+                toast.success("Item updated.");
+                return true;
+            }
+
+        } catch (error) {
+            dispatch(itemFail());
+            toast.error("Item failed to update.");
+            return false;
+        }
+    }
+};
+
+const deleteItemByIdAction = (id: string) => {
+    return async (dispatch: any) => {
+        try {
+            dispatch(itemStart());
+
+            const itemResponse = await APIService(
+                API_ITEMS.itemById(id),
+                APIMethods.DELETE
+            );
+
+            if (itemResponse.data.status === "success" || itemResponse.status === 204) {
+                dispatch(itemSuccess());
+                toast.success("Item deleted.");
+                return true;
+            }
+
+        } catch (error) {
+            dispatch(itemFail());
+            toast.error("Item failed to delete.");
+            return false;
+        }
+    }
+};
+
+const updateItemStatusAction = (payload: {id: string, status: "used" | "wasted"}) => {
+    return async (dispatch: any) => {
+        try {
+            dispatch(itemStart());
+
+            const itemResponse = await APIService(
+                API_ITEMS.itemStatus(payload.id),
+                APIMethods.PATCH,
+                { status: payload.status }
+            );
+
+            if (itemResponse.data.status === "success") {
+                dispatch(itemSuccess());
+                toast.success(`Item marked as ${payload.status}.`);
+                return true;
+            }
+
+        } catch (error) {
+            dispatch(itemFail());
+            toast.error("Item failed to update status.");
+            return false;
+        }
+    }
+};
 
 export {
     getItemsAction,
     createItemAction,
     updateItemByIdAction,
-    deleteItemByIdAction
+    deleteItemByIdAction,
+    updateItemStatusAction
 };

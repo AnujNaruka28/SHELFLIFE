@@ -20,25 +20,27 @@ interface ItemTableProps {
     currentPage?: number;
     currentLimit?: number;
     totalItems?: number;
+    isInventory?: boolean;
+    onSuccess?: () => void;
 }
 
-const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPageChange, currentPage, currentLimit, totalItems }: ItemTableProps) => {
+const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPageChange, currentPage, currentLimit, totalItems, isInventory = false, onSuccess }: ItemTableProps) => {
     const [page, setPage] = React.useState((currentPage || 1)-1);
     const [rowsPerPage, setRowsPerPage] = React.useState(currentLimit || 10);
 
     const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage);
-        onPageChange(newPage + 1);
+        onPageChange?.(newPage + 1);
     };
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newRowsPerPage = +event.target.value;
         setRowsPerPage(newRowsPerPage);
         setPage(0);
-        onRowsPerPageChange(newRowsPerPage);
+        onRowsPerPageChange?.(newRowsPerPage);
     };
 
-    const tableColumns = ["Id", "Name", "Quantity", "Category", "Expiry","Status", "Added By", "Updated By"];
+    const tableColumns = ["Id", "Name", "Quantity", "Category", "Expiry","Status", "Added By", "Updated By", ...(isInventory ? ["Actions"] : [])];
 
     return (
         <Paper sx={{ width: '100%', height: '100%' }}>
@@ -65,7 +67,7 @@ const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPage
                                 <TableBody>
                                     {
                                         data.map((row, index) => (
-                                                <Row key={row._id} row={row} index={index+1} />
+                                                <Row key={row._id} row={row} index={index+1} isInventory={isInventory} onSuccess={onSuccess} />
                                             ))
                                     }
                                 </TableBody>

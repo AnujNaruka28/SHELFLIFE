@@ -10,15 +10,26 @@ import Typography from '@mui/material/Typography';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import type { Item } from "../../../types/Item";
+import CTAButton from '../../common/CTAButton';
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { deleteItemByIdAction, updateItemStatusAction } from '../../../lib/actions/itemsAction';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../../lib/store';
+import { FiCheck, FiX } from 'react-icons/fi';
+const useAppDispatch = () => useDispatch<AppDispatch>();
 
+const LazyItemDialog = React.lazy(() => import('../../dialogs/ItemDialog'));
 interface RowProps {
     row: Item;
     index: number;
+    isInventory?: boolean;
+    onSuccess?: () => void;
 }
 
 export function Row(props: RowProps) {
-    const { row, index } = props;
+    const { row, index, isInventory = false, onSuccess } = props;
     const [open, setOpen] = React.useState(false);
+    const dispatch = useAppDispatch();
 
     const statusColors = {
         "fresh": "#22c55e",
@@ -27,6 +38,24 @@ export function Row(props: RowProps) {
         "used": "#3b82f6",
         "wasted": "#6b7280"
     };
+    
+    const handleDelete = async (id: string) => {
+        const success = await dispatch(deleteItemByIdAction(id)) || false;
+        if(success) {
+            onSuccess?.();
+        }
+    };
+
+    const handleStatusToggle = async () => {
+        const newStatus = row.status === "expired" ? "wasted" : "used";
+        const success = await dispatch(updateItemStatusAction({ id: row._id, status: newStatus })) || false;
+        if(success) {
+            onSuccess?.();
+        }
+    };
+
+    const isUsedOrWasted = row.status === "used" || row.status === "wasted";
+    
     return (
         <React.Fragment>
             <TableRow sx={{ '& > .MuiTableCell-root': { borderBottom: 'unset' } }}>
@@ -56,6 +85,49 @@ export function Row(props: RowProps) {
                 </TableCell>
                 <TableCell>{row.addedBy?.name || "Unknown"}</TableCell>
                 <TableCell>{row.updatedBy?.name || "Unknown"}</TableCell>
+
+                {
+                    isInventory &&
+                    <TableCell>
+                        <div className="flex items-center gap-2">
+                            <LazyItemDialog title="Edit Item" mode="edit" item={row} onSuccess={onSuccess}>
+                                <CTAButton
+                                    reactNode={<FiEdit2 className="h-4 w-4" />}
+                                    className="p-3 rounded-full"
+                                />
+                            </LazyItemDialog>
+
+                            <CTAButton
+                                reactNode={<FiTrash2 className="h-4 w-4" />}
+                                className="p-3 rounded-full bg-transparent hover:bg-destructive/10 text-destructive"
+                                onClick={() => handleDelete(row._id)}
+                            />
+
+                            <button
+                                onClick={handleStatusToggle}
+                                disabled={isUsedOrWasted}
+                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                                    isUsedOrWasted
+                                        ? row.status === 'used'
+                                            ? 'bg-[var(--primary)] text-white cursor-default'
+                                            : 'bg-red-500 text-white cursor-default'
+                                        : 'bg-gray-200 hover:bg-gray-300 text-gray-400'
+                                }`}
+                                title={isUsedOrWasted ? row.status : 'Mark as used'}
+                            >
+                                {isUsedOrWasted ? (
+                                    row.status === 'used' ? (
+                                        <FiCheck className="h-4 w-4" />
+                                    ) : (
+                                        <FiX className="h-4 w-4" />
+                                    )
+                                ) : (
+                                    <FiCheck className="h-4 w-4" />
+                                )}
+                            </button>
+                        </div>
+                    </TableCell>
+                }
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>

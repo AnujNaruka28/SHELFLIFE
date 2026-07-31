@@ -20,17 +20,12 @@ const itemsSlice = createSlice({
     initialState: inititalState,
     reducers: {
 
-        getItemsStart: (state) => {
+        itemStart: (state) => {
             state.loading = true;
             state.error = false;
         },
 
-        createItemStart: (state) => {
-            state.loading = true;
-            state.error = false;
-        },
-
-        itemCreatedSuccess: (state) => {
+        itemSuccess: (state) => {
             state.loading = false;
             state.error = false;
         },
@@ -42,17 +37,12 @@ const itemsSlice = createSlice({
             state.error = false;
         },
 
-        failGetItems: (state) => {
-            state.loading = false;
-            state.error = true;
-        },
-
-        failToCreateItem: (state) => {
+        itemFail: (state) => {
             state.loading = false;
             state.error = true;
         }
     }
 });
 
-export const { getItemsStart, createItemStart, itemCreatedSuccess, setItems, failGetItems, failToCreateItem } = itemsSlice.actions;
+export const { itemStart, itemSuccess, setItems, itemFail } = itemsSlice.actions;
 export default itemsSlice.reducer;

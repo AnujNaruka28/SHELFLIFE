@@ -14,24 +14,10 @@ const InventoryPage = () => {
     
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
-    const [category, setCategory] = useState('');
-    const [status, setStatus] = useState('');   
+    const [searchQuery, setSearchQuery] = useState('');
     const [refetchTrigger,setRefechTrigger] = useState(0);
 
-    const debouncedCategory = useDebounce(category, 500);
-    const debouncedStatus = useDebounce(status, 500);
-
-    const categories = ["produce", "dairy", "meat", "pantry", "frozen", "other"];
-    const statuses = ["fresh", "expiring-soon", "expired", "used", "wasted"];
-
-    const setFilter = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        const { name, value } = e.target;
-        if (categories.includes(name)) {
-            setCategory(value);
-        } else if (statuses.includes(name)) {
-            setStatus(value);
-        }
-    }
+    const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
     const handleItemCreated = () => {
         setRefechTrigger(prev => prev + 1);
@@ -42,10 +28,9 @@ const InventoryPage = () => {
 
     useEffect(() => {
         const queries: any = { page, limit };
-        if (debouncedCategory) queries.category = debouncedCategory;
-        if (debouncedStatus) queries.status = debouncedStatus;
+        if (debouncedSearchQuery) queries.search = debouncedSearchQuery;
         dispatch(getItemsAction(queries));
-    }, [debouncedCategory, debouncedStatus, page, limit, dispatch,refetchTrigger])
+    }, [debouncedSearchQuery, page, limit, dispatch,refetchTrigger])
     return (
         <div className="w-full h-full flex flex-col gap-2">
 
@@ -54,11 +39,11 @@ const InventoryPage = () => {
                 <div className="flex items-center gap-2 relative">
 
                     <TextField
-                        name="category"
+                        name="search"
                         placeholder="Search"
                         fullWidth
                         variant="outlined"
-                        onChange={setFilter}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                         sx={
                             {
                                 backgroundColor: '#fff',
@@ -116,9 +101,9 @@ const InventoryPage = () => {
             currentPage={page}
             currentLimit={limit}
             totalItems={totalItems}
+            isInventory={true}
+            onSuccess={handleItemCreated}
             />
-
-
 
         </div>
     )
