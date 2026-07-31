@@ -14,15 +14,14 @@ const computeItemStatus = (expiryDate: Date | string): "expired" | "expiring-soo
 };
 
 const getItems = async (req: Request, res: Response, next: NextFunction) => {
-    const { category, status, page, limit } = req.query as { category?: string; status?: string; page?: string; limit?: string };
+    const { search, page, limit } = req.query as { search?: string; page?: string; limit?: string };
     const householdId = (req as CustomRequest).user?.householdId;
 
     if (!householdId) return badRequest(res, "User must belong to a household.");
 
-    const filters: Record<string, string> = {};
+    const filters: Record<string, any> = {};
 
-    if (category) filters.category = category;
-    if (status) filters.status = status;
+    if(search) filters.name = { $regex: search, $options: "i" };
 
     const pageInt = parseInt(page || "1");
     const limitInt = parseInt(limit || "10");

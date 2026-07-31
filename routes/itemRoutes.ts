@@ -20,7 +20,6 @@ itemRouter.patch(
     "/items/:id/status",
     auth,
     validate(itemParamsSchema, "params"),
-    canModifyItem,
     validate(updateItemStatusSchema),
     updateItemStatus,
 );
