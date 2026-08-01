@@ -1,5 +1,6 @@
 import { TextField } from "@mui/material";
 import { FaSearch } from "react-icons/fa";
+import { LiaBarcodeSolid } from "react-icons/lia";
 import ItemTable from "../components/cores/Table/ItemTable";
 import { useDispatch, useSelector } from "react-redux";
 import { lazy, useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import CTAButton from "../components/common/CTAButton";
 const useAppDispatch = () => useDispatch<AppDispatch>();
 const LazyItemDialog = lazy(() => import('../components/dialogs/ItemDialog'));
+const LazyScannerDialog = lazy(() => import('../components/dialogs/ScannerDialog'));
 
 const InventoryPage = () => {
     
@@ -82,12 +84,23 @@ const InventoryPage = () => {
 
                 </div>
 
-                <LazyItemDialog title="Add Item" mode="create" onSuccess={handleItemCreated}>
-                    <CTAButton
-                        text="Add Item"
-                        className="py-1"
-                    />
-                </LazyItemDialog>
+                <div className="w-full flex flex-col min-[768px]:flex-row min-[768px]:items-center gap-2">
+            
+                    <LazyItemDialog title="Add Item" mode="create" onSuccess={handleItemCreated}>
+                        <CTAButton
+                            text="Add Item"
+                            className="py-1 min-[768px]:w-[50%]"
+                        />
+                    </LazyItemDialog>
+
+                    <LazyScannerDialog>
+                        <CTAButton
+                            reactNode={<LiaBarcodeSolid className="w-6 h-6" />}
+                            className="py-1 flex justify-center bg-[#464547] min-[768px]:w-[50%]"
+                        />
+                    </LazyScannerDialog>
+
+                </div>
 
             </div>
 
