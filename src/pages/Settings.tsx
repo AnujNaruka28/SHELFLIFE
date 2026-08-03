@@ -1,9 +1,28 @@
 import { Chip, Paper, TextField } from "@mui/material";
 import { useSelector } from "react-redux";
+import { MdContentCopy } from "react-icons/md";
+import { toast } from "react-toastify";
 
 const Settings = () => {
 
     const {user, inviteCode} = useSelector((state: any) => state.auth);
+
+    const handleCopy = async () => {
+
+        try {
+
+            if(!inviteCode) {
+                toast.error("No invite code available");
+                return;
+            }
+            await navigator.clipboard.writeText(inviteCode);
+            toast.success("Copied Invite Code Successfully.");
+        } catch (error) {
+            toast.error("Failed to copy invite code.");
+        }
+
+    }
+
     return (
         <Paper sx={{ 
             width: '100%', 
@@ -46,7 +65,8 @@ const Settings = () => {
                     }}
                 />
 
-                <TextField
+                <div className="w-full flex items-center justify-center gap-2 relative">
+                    <TextField
                     disabled
                     id="standard-disabled"
                     label="Invite Code"
@@ -55,7 +75,15 @@ const Settings = () => {
                     sx={{
                         width: '80%'
                     }}
-                />
+                    />
+
+                    <MdContentCopy onClick={handleCopy} className="absolute right-2 cursor-pointer w-4 h-4" />
+
+                </div>
+
+
+
+
 
 
             </div>

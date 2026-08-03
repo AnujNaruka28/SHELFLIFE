@@ -22,9 +22,10 @@ interface ItemTableProps {
     totalItems?: number;
     isInventory?: boolean;
     onSuccess?: () => void;
+    pagination?: boolean;
 }
 
-const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPageChange, currentPage, currentLimit, totalItems, isInventory = false, onSuccess }: ItemTableProps) => {
+const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPageChange, currentPage, currentLimit, totalItems, isInventory = false, onSuccess, pagination = true }: ItemTableProps) => {
     const [page, setPage] = React.useState((currentPage || 1)-1);
     const [rowsPerPage, setRowsPerPage] = React.useState(currentLimit || 10);
 
@@ -43,7 +44,7 @@ const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPage
     const tableColumns = ["Id", "Name", "Quantity", "Category", "Expiry","Status", "Added By", "Updated By", ...(isInventory ? ["Actions"] : [])];
 
     return (
-        <Paper sx={{ width: '100%', height: '100%' }}>
+        <Paper sx={{ width: '100%', height: '80%' }}>
 
 
             {
@@ -73,7 +74,9 @@ const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPage
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        <TablePagination 
+                        {
+                            pagination && 
+                            <TablePagination 
                             className='h-[20%]'
                             rowsPerPageOptions={[10, 25, 100]}
                             component="div"
@@ -82,7 +85,8 @@ const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPage
                             page={page}
                             onPageChange={handleChangePage}
                             onRowsPerPageChange={handleChangeRowsPerPage}
-                        /> 
+                            /> 
+                        }
                     </>
                     ) : (
                         <div className='h-full flex items-center justify-center'>

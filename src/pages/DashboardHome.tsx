@@ -123,7 +123,12 @@ const DashboardHome = () => {
                     }
                 </div>
 
-                <ItemTable data={itemsExpiring} itemsLoading={itemsLoading} itemsError={itemsFetchError} />
+                <ItemTable 
+                    data={itemsExpiring} 
+                    itemsLoading={itemsLoading} 
+                    itemsError={itemsFetchError} 
+                    pagination={false}
+                />
                 
             </CommonCard>
 

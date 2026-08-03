@@ -35,13 +35,14 @@ const DashboardLayout = () => {
                 </nav>
 
                 <div className="w-full h-[calc(100vh-60px)]">
-                    <div className="bg-muted w-full h-full overflow-hidden
+                    <div className="bg-muted w-full h-full overflow-x-hidden
                     flex flex-col items-start px-4 py-2 gap-2">
                         <motion.h1 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.5 }}
-                        className="w-full text-muted-foreground font-semibold">
+                            className="w-full text-muted-foreground font-semibold"
+                        >
                             {feature.charAt(0).toUpperCase() + feature.slice(1)}
                         </motion.h1>
                         <Outlet />
