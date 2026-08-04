@@ -27,7 +27,104 @@ const getAllItemsByHouseholdId = async (houseId: Types.ObjectId) => {
  
 }
 
+const getUsersRankings = async (houseId: Types.ObjectId) => {
+    
+    const items = Item.aggregate([
+
+        {
+            $match: {
+                householdId: houseId
+            },
+        },
+
+        {
+            $group: {
+                _id: "$usedBy",
+                useScore: {
+                    $sum: {
+                        $cond: [
+                            {
+                                $ne: ["$usedBy", null]
+                            },
+                            1,
+                            0
+                        ]
+                    }
+                },
+                wasteScore: {
+                    $sum : {
+                        $cond: [
+                            {
+                                $ne: ["$wastedBy", null]
+                            },
+                            1,
+                            0
+                        ]
+                    }
+                }
+            }
+        },
+        
+        {
+            $addFields: {
+                score: {
+                    $subtract: ["$useScore", "$wasteScore"]
+                }
+            }
+        },
+
+        {
+            $match: {
+                _id: { $ne: null }
+            }
+        },
+        
+        {
+            $sort: {
+                score: -1
+            }
+        },
+
+        {
+            $setWindowFields: {
+                sortBy: {
+                    score: -1
+                },
+                output: {
+                    rank: {
+                        $rank: {}
+                    }
+                }
+            }
+        },
+
+        {
+            $lookup: {
+                from: "users",
+                localField: "_id",
+                foreignField: "_id",
+                as: "user"
+            }
+        },
+
+        {
+            $project: {
+                userId: "$_id",
+                userName: { $arrayElemAt: ["$user.name", 0] },
+                useScore: 1,
+                wasteScore: 1,
+                score: 1,
+                rank: 1
+            }
+        }
+
+    ])
+    
+    return items;
+}
+
 export {
     getItemsByHouseholdIdExpiringIn24hours,
-    getAllItemsByHouseholdId
+    getAllItemsByHouseholdId,
+    getUsersRankings
 }

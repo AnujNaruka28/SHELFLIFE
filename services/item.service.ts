@@ -10,7 +10,9 @@ const findItems = async (houseId: Types.ObjectId, filters?: Record<string, strin
             .skip(offset)
             .limit(limit)
             .populate("addedBy", "name email")
-            .populate("updatedBy", "name email");
+            .populate("updatedBy", "name email")
+            .populate("usedBy", "name email")
+            .populate("wastedBy", "name email");
         
         const total = await Item.countDocuments({ ...filters, householdId: houseId });
         
@@ -22,7 +24,7 @@ const findItems = async (houseId: Types.ObjectId, filters?: Record<string, strin
 
 const saveItem = async (item: Partial<IItem>) => {
     try {
-        return (await Item.create({ ...item, updatedBy: item.addedBy })).populate("addedBy updatedBy");
+        return (await Item.create({ ...item, updatedBy: item.addedBy })).populate("addedBy updatedBy usedBy wastedBy");
     } catch (err) {
         return new Error(`Failed to save item in DB : ${err}`);
     }
@@ -52,7 +54,7 @@ const updateItemById = async (id: string, item: Partial<IItem>) => {
                         : "fresh";
         }
 
-        return await Item.findByIdAndUpdate(id, updatePayload, { new: true }).populate("updatedBy");
+        return await Item.findByIdAndUpdate(id, updatePayload, { new: true }).populate("updatedBy usedBy wastedBy");
     } catch (err) {
         return new Error(`Failed to update item in DB : ${err}`);
     }
@@ -61,14 +63,14 @@ const updateItemById = async (id: string, item: Partial<IItem>) => {
 const updateItemStatusById = async (
     id: string,
     status: "used" | "wasted",
-    updatedBy: Types.ObjectId,
+    userId: Types.ObjectId,
 ) => {
     try {
         return await Item.findByIdAndUpdate(
             id,
-            { status, updatedBy },
+            { status, [status === "used" ? "usedBy" : "wastedBy"]: userId },
             { new: true },
-        );
+        ).populate("usedBy wastedBy");
     } catch (err) {
         return new Error(`Failed to update item in DB : ${err}`);
     }

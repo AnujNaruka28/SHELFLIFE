@@ -40,6 +40,16 @@ const ItemSchema = new Schema<IItem>({
         required: true,
         ref: "User",
     },
+    usedBy: {
+        type: Schema.Types.ObjectId,
+        default: null,
+        ref: "User",
+    },
+    wastedBy: {
+        type: Schema.Types.ObjectId,
+        default: null,
+        ref: "User",
+    },
     createdAt: {    
         type: Date,
         default: Date.now,

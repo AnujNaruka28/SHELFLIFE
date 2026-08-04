@@ -9,6 +9,8 @@ export interface IItem extends Document {
     status: "fresh" | "expiring-soon" | "expired" | "used" | "wasted";
     addedBy: Types.ObjectId;
     updatedBy: Types.ObjectId;
+    usedBy: Types.ObjectId | null;
+    wastedBy: Types.ObjectId | null;
     createdAt: Date;
     updatedAt: Date;
 }

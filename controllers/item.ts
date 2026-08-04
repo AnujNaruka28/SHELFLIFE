@@ -98,11 +98,11 @@ const deleteItem = async (req: Request, res: Response) => {
 const updateItemStatus = async (req: Request, res: Response, next: NextFunction) => {
     const { status } = req.body;
     const itemId = req.params.id as string;
-    const updatedBy = (req as CustomRequest).user?._id;
+    const userId = (req as CustomRequest).user?._id;
 
-    if (!updatedBy) return badRequest(res, "User not found.");
+    if (!userId) return badRequest(res, "User not found.");
 
-    const updatedItem = await updateItemStatusById(itemId, status, updatedBy);
+    const updatedItem = await updateItemStatusById(itemId, status, userId);
 
     if (updatedItem instanceof Error) return next(updatedItem);
     if (!updatedItem) return error(res, "Item not found.");

@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type { CustomRequest } from "../types/CustomRequest.ts";
-import { getAllItemsByHouseholdId, getItemsByHouseholdIdExpiringIn24hours } from "../services/dashboard.service.js";
+import { getAllItemsByHouseholdId, getItemsByHouseholdIdExpiringIn24hours, getUsersRankings } from "../services/dashboard.service.js";
 import { badRequest, error, noContent, success } from "../utils/response.js";
 
 const stats = async (req: Request, res: Response) => {
@@ -60,4 +60,23 @@ const expiring = async (req: Request, res: Response) => {
     return success(res, "Expiring Items Fetched Successfully.", itemsExpiring);
 };
 
-export { stats, expiring };
+const leaderboard = async (req: Request, res: Response) => {
+        
+    const householdId = (req as CustomRequest).user?.householdId;
+
+    if (!householdId) return badRequest(res, "No house exists for current user.");
+    
+    let leaderboardData: Awaited<ReturnType<typeof getUsersRankings>>;
+    try {
+        leaderboardData = await getUsersRankings(householdId);
+    } catch (err) {
+        return error(res, "Failed to fetch leaderboard data.", err);
+    }
+
+    if (leaderboardData.length === 0) return noContent(res);
+
+    return success(res, "Leaderboard Data Fetched Successfully.", leaderboardData);
+
+}
+
+export { stats, expiring, leaderboard };
