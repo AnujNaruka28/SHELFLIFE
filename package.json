@@ -41,6 +41,9 @@
     "build": "tsc",
     "dev": "tsc && node dist/index.js",
     "start": "node dist/index.js",
-    "seed": "npx tsx seeds/db-seed.ts"
+    "seed": "npx tsx seeds/db-seed.ts",
+    "cron:status": "npx tsx daily-itemstatus-cron.ts",
+    "cron:mail": "npx tsx daily-mail-cron.ts",
+    "cron:clean": "npx tsx clean-expired-items-cron.ts"
   }
 }

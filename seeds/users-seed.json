@@ -23,5 +23,30 @@
     "name": "David Thompson",
     "email": "david.thompson@example.com",
     "password": "password123"
+  },
+  {
+    "name": "Jessica Williams",
+    "email": "jessica.williams@example.com",
+    "password": "password123"
+  },
+  {
+    "name": "Robert Martinez",
+    "email": "robert.martinez@example.com",
+    "password": "password123"
+  },
+  {
+    "name": "Amanda Lee",
+    "email": "amanda.lee@example.com",
+    "password": "password123"
+  },
+  {
+    "name": "Christopher Garcia",
+    "email": "christopher.garcia@example.com",
+    "password": "password123"
+  },
+  {
+    "name": "Michelle Taylor",
+    "email": "michelle.taylor@example.com",
+    "password": "password123"
   }
 ]

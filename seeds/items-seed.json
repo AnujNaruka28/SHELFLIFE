@@ -4,104 +4,236 @@
     "quantity": 2,
     "category": "dairy",
     "expiryDate": "2026-07-28",
-    "status": "expiring-soon"
+    "status": "used",
+    "addedByEmail": "sarah.johnson@example.com",
+    "usedByEmail": "sarah.johnson@example.com"
   },
   {
     "name": "Chicken Breast",
     "quantity": 1,
     "category": "meat",
     "expiryDate": "2026-07-30",
-    "status": "fresh"
+    "status": "fresh",
+    "addedByEmail": "michael.chen@example.com"
   },
   {
     "name": "Bananas",
     "quantity": 6,
     "category": "produce",
     "expiryDate": "2026-07-26",
-    "status": "expiring-soon"
+    "status": "wasted",
+    "addedByEmail": "emily.rodriguez@example.com",
+    "wastedByEmail": "emily.rodriguez@example.com"
   },
   {
     "name": "Greek Yogurt",
     "quantity": 3,
     "category": "dairy",
     "expiryDate": "2026-08-05",
-    "status": "fresh"
+    "status": "used",
+    "addedByEmail": "david.thompson@example.com",
+    "usedByEmail": "david.thompson@example.com"
   },
   {
     "name": "Whole Wheat Bread",
     "quantity": 1,
     "category": "pantry",
     "expiryDate": "2026-07-25",
-    "status": "expired"
+    "status": "wasted",
+    "addedByEmail": "jessica.williams@example.com",
+    "wastedByEmail": "jessica.williams@example.com"
   },
   {
     "name": "Frozen Peas",
     "quantity": 2,
     "category": "frozen",
     "expiryDate": "2026-12-15",
-    "status": "fresh"
+    "status": "used",
+    "addedByEmail": "robert.martinez@example.com",
+    "usedByEmail": "robert.martinez@example.com"
   },
   {
     "name": "Ground Beef",
     "quantity": 1,
     "category": "meat",
     "expiryDate": "2026-07-27",
-    "status": "expiring-soon"
+    "status": "used",
+    "addedByEmail": "amanda.lee@example.com",
+    "usedByEmail": "amanda.lee@example.com"
   },
   {
     "name": "Apples",
     "quantity": 8,
     "category": "produce",
     "expiryDate": "2026-08-10",
-    "status": "fresh"
+    "status": "fresh",
+    "addedByEmail": "christopher.garcia@example.com"
   },
   {
     "name": "Cheddar Cheese",
     "quantity": 1,
     "category": "dairy",
     "expiryDate": "2026-08-20",
-    "status": "fresh"
+    "status": "wasted",
+    "addedByEmail": "michelle.taylor@example.com",
+    "wastedByEmail": "michelle.taylor@example.com"
   },
   {
     "name": "Spinach",
     "quantity": 2,
     "category": "produce",
     "expiryDate": "2026-07-24",
-    "status": "expired"
+    "status": "used",
+    "addedByEmail": "sarah.johnson@example.com",
+    "usedByEmail": "sarah.johnson@example.com"
   },
   {
     "name": "Salmon Fillet",
     "quantity": 2,
     "category": "meat",
     "expiryDate": "2026-07-29",
-    "status": "expiring-soon"
+    "status": "used",
+    "addedByEmail": "michael.chen@example.com",
+    "usedByEmail": "michael.chen@example.com"
   },
   {
     "name": "Orange Juice",
     "quantity": 1,
     "category": "dairy",
     "expiryDate": "2026-08-01",
-    "status": "fresh"
+    "status": "wasted",
+    "addedByEmail": "emily.rodriguez@example.com",
+    "wastedByEmail": "emily.rodriguez@example.com"
   },
   {
     "name": "Rice",
     "quantity": 5,
     "category": "pantry",
     "expiryDate": "2027-01-15",
-    "status": "fresh"
+    "status": "used",
+    "addedByEmail": "david.thompson@example.com",
+    "usedByEmail": "david.thompson@example.com"
   },
   {
     "name": "Ice Cream",
     "quantity": 1,
     "category": "frozen",
     "expiryDate": "2026-09-30",
-    "status": "fresh"
+    "status": "fresh",
+    "addedByEmail": "jessica.williams@example.com"
   },
   {
     "name": "Broccoli",
     "quantity": 3,
     "category": "produce",
     "expiryDate": "2026-07-28",
-    "status": "expiring-soon"
+    "status": "used",
+    "addedByEmail": "robert.martinez@example.com",
+    "usedByEmail": "robert.martinez@example.com"
+  },
+  {
+    "name": "Eggs",
+    "quantity": 12,
+    "category": "dairy",
+    "expiryDate": "2026-08-15",
+    "status": "used",
+    "addedByEmail": "amanda.lee@example.com",
+    "usedByEmail": "amanda.lee@example.com"
+  },
+  {
+    "name": "Tomatoes",
+    "quantity": 4,
+    "category": "produce",
+    "expiryDate": "2026-08-08",
+    "status": "wasted",
+    "addedByEmail": "christopher.garcia@example.com",
+    "wastedByEmail": "christopher.garcia@example.com"
+  },
+  {
+    "name": "Pasta",
+    "quantity": 2,
+    "category": "pantry",
+    "expiryDate": "2027-03-20",
+    "status": "fresh",
+    "addedByEmail": "michelle.taylor@example.com"
+  },
+  {
+    "name": "Butter",
+    "quantity": 1,
+    "category": "dairy",
+    "expiryDate": "2026-09-10",
+    "status": "used",
+    "addedByEmail": "sarah.johnson@example.com",
+    "usedByEmail": "sarah.johnson@example.com"
+  },
+  {
+    "name": "Chicken Wings",
+    "quantity": 8,
+    "category": "meat",
+    "expiryDate": "2026-08-12",
+    "status": "wasted",
+    "addedByEmail": "michael.chen@example.com",
+    "wastedByEmail": "michael.chen@example.com"
+  },
+  {
+    "name": "Carrots",
+    "quantity": 6,
+    "category": "produce",
+    "expiryDate": "2026-08-18",
+    "status": "used",
+    "addedByEmail": "emily.rodriguez@example.com",
+    "usedByEmail": "emily.rodriguez@example.com"
+  },
+  {
+    "name": "Almond Milk",
+    "quantity": 1,
+    "category": "dairy",
+    "expiryDate": "2026-09-05",
+    "status": "fresh",
+    "addedByEmail": "david.thompson@example.com"
+  },
+  {
+    "name": "Pork Chops",
+    "quantity": 2,
+    "category": "meat",
+    "expiryDate": "2026-08-14",
+    "status": "used",
+    "addedByEmail": "jessica.williams@example.com",
+    "usedByEmail": "jessica.williams@example.com"
+  },
+  {
+    "name": "Strawberries",
+    "quantity": 1,
+    "category": "produce",
+    "expiryDate": "2026-08-06",
+    "status": "wasted",
+    "addedByEmail": "robert.martinez@example.com",
+    "wastedByEmail": "robert.martinez@example.com"
+  },
+  {
+    "name": "Cereal",
+    "quantity": 1,
+    "category": "pantry",
+    "expiryDate": "2027-02-28",
+    "status": "fresh",
+    "addedByEmail": "amanda.lee@example.com"
+  },
+  {
+    "name": "Shrimp",
+    "quantity": 1,
+    "category": "meat",
+    "expiryDate": "2026-08-16",
+    "status": "used",
+    "addedByEmail": "christopher.garcia@example.com",
+    "usedByEmail": "christopher.garcia@example.com"
+  },
+  {
+    "name": "Lettuce",
+    "quantity": 2,
+    "category": "produce",
+    "expiryDate": "2026-08-09",
+    "status": "wasted",
+    "addedByEmail": "michelle.taylor@example.com",
+    "wastedByEmail": "michelle.taylor@example.com"
   }
 ]

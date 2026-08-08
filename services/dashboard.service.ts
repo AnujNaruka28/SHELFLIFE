@@ -12,6 +12,7 @@ const getItemsByHouseholdIdExpiringIn24hours = async (houseId: Types.ObjectId) =
             $gte: now,
             $lte: tomorrow,
         },
+        status: { $nin: ["wasted", "used"] }
     }).populate("addedBy updatedBy", "name email");
 
     return items;
@@ -111,6 +112,7 @@ const getUsersRankings = async (houseId: Types.ObjectId) => {
             $project: {
                 userId: "$_id",
                 userName: { $arrayElemAt: ["$user.name", 0] },
+                avatarUrl: { $arrayElemAt: ["$user.profileImage.secure_url", 0] },
                 useScore: 1,
                 wasteScore: 1,
                 score: 1,
@@ -123,8 +125,20 @@ const getUsersRankings = async (houseId: Types.ObjectId) => {
     return items;
 }
 
+const getNotifications = async (houseId: Types.ObjectId) => {
+
+    const itemsExpired = await Item.find({
+        householdId: houseId,
+        status: "expired"
+    });
+
+    return itemsExpired;
+    
+}
+
 export {
     getItemsByHouseholdIdExpiringIn24hours,
     getAllItemsByHouseholdId,
-    getUsersRankings
+    getUsersRankings,
+    getNotifications
 }

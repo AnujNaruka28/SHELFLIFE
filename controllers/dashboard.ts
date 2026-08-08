@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type { CustomRequest } from "../types/CustomRequest.ts";
-import { getAllItemsByHouseholdId, getItemsByHouseholdIdExpiringIn24hours, getUsersRankings } from "../services/dashboard.service.js";
+import { getAllItemsByHouseholdId, getItemsByHouseholdIdExpiringIn24hours, getUsersRankings, getNotifications } from "../services/dashboard.service.js";
 import { badRequest, error, noContent, success } from "../utils/response.js";
 
 const stats = async (req: Request, res: Response) => {
@@ -79,4 +79,23 @@ const leaderboard = async (req: Request, res: Response) => {
 
 }
 
-export { stats, expiring, leaderboard };
+const notifications = async (req: Request, res: Response) => {
+    
+    const householdId = (req as CustomRequest).user?.householdId;
+
+    if (!householdId) return badRequest(res, "No house exists for current user.");
+
+    let notifications: Awaited<ReturnType<typeof getNotifications>>;
+    try {
+        notifications = await getNotifications(householdId);
+    } catch (err) {
+        return error(res, "Failed to fetch notifications.", err);
+    }
+
+    if (notifications.length === 0) return noContent(res);
+
+    return success(res, "Notifications Fetched Successfully.", notifications);
+
+}
+
+export { stats, expiring, leaderboard, notifications };

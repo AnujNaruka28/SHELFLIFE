@@ -74,12 +74,29 @@ const seedItems = async (household: any, users: any[]) => {
       throw new Error("Admin user not found");
     }
 
-    const itemsWithRefs = itemsData.map((item) => ({
-      ...item,
-      householdId: household._id,
-      addedBy: adminUser._id,
-      updatedBy: adminUser._id,
-    }));
+    // Create email to user ID mapping
+    const userMap = new Map();
+    users.forEach((user) => {
+      userMap.set(user.email, user._id);
+    });
+
+    const itemsWithRefs = itemsData.map((item) => {
+      const addedBy = item.addedByEmail ? userMap.get(item.addedByEmail) : adminUser._id;
+      const usedBy = item.usedByEmail ? userMap.get(item.usedByEmail) : null;
+      const wastedBy = item.wastedByEmail ? userMap.get(item.wastedByEmail) : null;
+
+      // Remove email fields from item data
+      const { addedByEmail, usedByEmail, wastedByEmail, ...itemData } = item;
+
+      return {
+        ...itemData,
+        householdId: household._id,
+        addedBy: addedBy || adminUser._id,
+        updatedBy: addedBy || adminUser._id,
+        usedBy: usedBy,
+        wastedBy: wastedBy,
+      };
+    });
 
     const items = await Item.insertMany(itemsWithRefs);
     console.log("Items seeded successfully:", items.length);
