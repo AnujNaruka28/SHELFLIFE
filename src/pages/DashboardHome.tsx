@@ -7,10 +7,11 @@ import { motion } from "framer-motion"
 import { useEffect } from "react"
 import { expiringItemsAction, statsAction } from "../lib/actions/dashboardAction"
 import { Skeleton } from "@mui/material"
+import { PieChart, Pie, ResponsiveContainer, Tooltip } from 'recharts' // Removed Cell import
 
-const CommonCard = ({ children, isTableBox }: { children: React.ReactNode, isTableBox: boolean }) => {
+const CommonCard = ({ children, isTableBox = false }: { children: React.ReactNode, isTableBox?: boolean }) => {
     return (
-        <article className={`w-full h-[50%] ${isTableBox ? "min-[768px]:h-[86%]" : "min-[768px]:h-[14%] min-[768px]:flex-row"} bg-card shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] p-4
+        <article className={`w-full h-[400px] ${isTableBox ? "min-[768px]:h-[86%]" : "min-[768px]:h-[14%] min-[768px]:flex-row"} bg-card shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] p-4
         flex flex-col gap-4`}>
             {children}
         </article>
@@ -78,7 +79,7 @@ const DashboardHome = () => {
                             initial={{opacity: 0, y:20, scale: 0.95}}
                             animate={{opacity: 1, y:0, scale: 1}}
                             transition={{duration: 0.3}}
-                            className="w-full h-1/3 min-[768px]:h-full min-[768px]:w-1/3 flex items-center justify-between px-4 bg-[#fff] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] rounded"
+                            className="w-full h-[60px] min-[768px]:h-full min-[768px]:w-1/3 flex items-center justify-between px-4 bg-[#fff] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] rounded"
                             >
                                 <Skeleton variant="text" width={100} height={30} />
                                 <Skeleton variant="circular" width={40} height={40} />
@@ -105,32 +106,83 @@ const DashboardHome = () => {
                 
             </CommonCard>
 
-            <CommonCard isTableBox={true}>
+            <div className="w-full h-full flex flex-col-reverse gap-2 min-[1200px]:flex-row">
 
-                <div className='flex justify-between'>
-                    {
-                        ["Expires In 24 Hours",`Total Items: ${totalItems}`].map( 
-                            (text,index) =>
-                                <motion.p 
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.5 }}
-                                    className="text-sm text-muted-foreground font-semibold"
-                                    key={`${text} - ${index}`}>
-                                        {text}
-                                </motion.p>
-                        )
-                    }
-                </div>
+                <CommonCard isTableBox={true}>
 
-                <ItemTable 
-                    data={itemsExpiring} 
-                    itemsLoading={itemsLoading} 
-                    itemsError={itemsFetchError} 
-                    pagination={false}
-                />
+                    <div className="w-full h-full flex flex-col gap-2">
+
+                        <div className="w-full h-[15%] flex items-center justify-center gap-4">
+                            <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 rounded" style={{ backgroundColor: '#3b82f6' }}></div>
+                                <span className="text-sm font-medium">Used</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 rounded" style={{ backgroundColor: '#6b7280' }}></div>
+                                <span className="text-sm font-medium">Wasted</span>
+                            </div>
+                        </div>
+
+                        <ResponsiveContainer width="100%" height="85%" className="bg-[#fff]">
+                            <PieChart>
+                                <Tooltip />
+                                <Pie
+                                    startAngle={180}
+                                    endAngle={0}
+                                    innerRadius={80}
+                                    outerRadius={100}
+                                    paddingAngle={5}
+                                    data={[
+                                        {
+                                            name: 'Used',
+                                            value: structuredStats.find(stat => stat.status === 'Used')?.count || 0,
+                                            fill: '#3b82f6'
+                                        },
+                                        {
+                                            name: 'Wasted',
+                                            value: structuredStats.find(stat => stat.status === 'Wasted')?.count || 0,
+                                            fill: '#6b7280'
+                                        }
+                                    ]}
+                                    dataKey="value"
+                                    nameKey="name"
+                                    cx="50%"
+                                    cy="75%"
+                                />
+                            </PieChart>
+                        </ResponsiveContainer>
+
+                    </div>
+                </CommonCard>
+
+                <CommonCard isTableBox={true}>
+
+                    <div className='flex justify-between'>
+                        {
+                            ["Expires In 24 Hours",`Total Items: ${totalItems}`].map( 
+                                (text,index) =>
+                                    <motion.p 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="text-sm text-muted-foreground font-semibold"
+                                        key={`${text} - ${index}`}>
+                                            {text}
+                                    </motion.p>
+                            )
+                        }
+                    </div>
+
+                    <ItemTable 
+                        data={itemsExpiring} 
+                        itemsLoading={itemsLoading} 
+                        itemsError={itemsFetchError} 
+                        pagination={false}
+                    />
                 
-            </CommonCard>
+                </CommonCard>
+
+            </div>
 
         </>
     )

@@ -13,7 +13,7 @@ import type { Item } from "../../../types/Item";
 import CTAButton from '../../common/CTAButton';
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { deleteItemByIdAction, updateItemStatusAction } from '../../../lib/actions/itemsAction';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../../../lib/store';
 import { FiCheck, FiX } from 'react-icons/fi';
 const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -30,6 +30,8 @@ export function Row(props: RowProps) {
     const { row, index, isInventory = false, onSuccess } = props;
     const [open, setOpen] = React.useState(false);
     const dispatch = useAppDispatch();
+
+    const {user} = useSelector((state: any) => state.auth)
 
     const statusColors = {
         "fresh": "#22c55e",
@@ -90,18 +92,26 @@ export function Row(props: RowProps) {
                     isInventory &&
                     <TableCell>
                         <div className="flex items-center gap-2">
-                            <LazyItemDialog title="Edit Item" mode="edit" item={row} onSuccess={onSuccess}>
-                                <CTAButton
-                                    reactNode={<FiEdit2 className="h-4 w-4" />}
-                                    className="p-3 rounded-full"
-                                />
-                            </LazyItemDialog>
 
-                            <CTAButton
-                                reactNode={<FiTrash2 className="h-4 w-4" />}
-                                className="p-3 rounded-full bg-transparent hover:bg-destructive/10 text-destructive"
-                                onClick={() => handleDelete(row._id)}
-                            />
+                            {
+                                (user?.role === "admin" || row.addedBy?._id === user?._id) && ( 
+                                    <>  
+                                        <LazyItemDialog title="Edit Item" mode="edit" item={row} onSuccess={onSuccess}>
+                                            <CTAButton
+                                                reactNode={<FiEdit2 className="h-4 w-4" />}
+                                                className="p-3 rounded-full"
+                                            />
+                                        </LazyItemDialog>
+   
+                                        <CTAButton
+                                            reactNode={<FiTrash2 className="h-4 w-4" />}
+                                            className="p-3 rounded-full bg-transparent hover:bg-destructive/10 text-destructive"
+                                            onClick={() => handleDelete(row._id)}
+                                        />
+                                    </>
+                                )
+                            }
+
 
                             <button
                                 onClick={handleStatusToggle}
@@ -153,6 +163,14 @@ export function Row(props: RowProps) {
                                     <TableRow>
                                         <TableCell component="th" scope="row">Updated By Email</TableCell>
                                         <TableCell>{row.updatedBy?.email || "Unknown"}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Used By</TableCell>
+                                        <TableCell>{row.usedBy?.name || "none"}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Wasted By</TableCell>
+                                        <TableCell>{row.wastedBy?.name || "none"}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>

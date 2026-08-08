@@ -9,6 +9,8 @@ export interface Item {
     status: "fresh" | "expiring-soon" | "expired" | "used" | "wasted";
     addedBy: User;
     updatedBy: User;
+    usedBy: User | null;
+    wastedBy: User | null;
     createdAt: Date;
     updatedAt: Date;
 }

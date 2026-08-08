@@ -1,9 +1,26 @@
 import { motion } from "motion/react";
 import CTAButton from "../components/common/CTAButton";
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
+import useAuthAndHouseholdCheck from "../hooks/useAuthAndHouseholdCheck";
+import { Link, useNavigate } from "react-router-dom";
+import Loader from "../components/common/Loader";
 const LazyJoinDialog = lazy(() => import("../components/dialogs/JoinDialog"));
 
 const Home = () => {
+
+  const {hasHousehold,loading,token} = useAuthAndHouseholdCheck();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token && hasHousehold) {
+      navigate("/dashboard");
+    } 
+  }, [token,hasHousehold,navigate])
+
+  if(loading) {
+    return <Loader/>;
+  }
+
   return (
     <>
       <CTAButton
@@ -29,6 +46,12 @@ const Home = () => {
         className="py-1"
         />
       </LazyJoinDialog>
+
+      <div className="flex justify-end">
+        <Link to="/register" className="text-blue-500 hover:underline">
+          Don't have an account?
+        </Link>
+      </div>
     </>
   );
 };

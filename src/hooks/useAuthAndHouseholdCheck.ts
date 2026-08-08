@@ -19,7 +19,11 @@ const useAuthAndHouseholdCheck = () => {
         const checkAuthAndHousehold = async () => {
             if (!token) {
                 // Only redirect if not already on auth pages
-                if (location.pathname !== "/login" && location.pathname !== "/register") {
+                if (
+                    location.pathname !== "/login" && 
+                    location.pathname !== "/register" && 
+                    location.pathname !== "/"
+                ) {
                     navigate("/login");
                 }
                 setLoading(false);
@@ -52,7 +56,8 @@ const useAuthAndHouseholdCheck = () => {
     return {
         hasHousehold,
         loading,
-        token
+        token,
+        setLoading
     };
 
 };

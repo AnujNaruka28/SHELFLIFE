@@ -30,7 +30,7 @@ const loginAction = (loginData: { email: string; password: string }, navigate: N
     };
 };
 
-const signupAction = (name: string, email: string, password: string, navigate: NavigateFunction) => {
+const signupAction = (name: string, email: string, password: string, otp: number, navigate: NavigateFunction) => {
     return async (dispatch: any) => {
         try {
             dispatch(authStart());
@@ -38,7 +38,7 @@ const signupAction = (name: string, email: string, password: string, navigate: N
             const response = await APIService(
                 API_AUTH.register,
                 APIMethods.POST,
-                { name, email, password }
+                { name, email, password, otp }
             );
             
             dispatch(authSuccess({

@@ -2,27 +2,52 @@ import { Input, InputLabel } from "@mui/material";
 import CTAButton from "../components/common/CTAButton";
 import type { AuthPropsType } from "../types/AuthPropsType";
 import StyledFormControl from "../components/common/StyledFormControl";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import type { AuthFormValue } from "../types/AuthFormValue";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../lib/store";
 import { loginAction, signupAction } from "../lib/actions/authAction";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../components/common/Loader";
 import useAuthAndHouseholdCheck from "../hooks/useAuthAndHouseholdCheck";
+import { APIService } from "../lib/APIService";
+import { API_AUTH } from "../lib/apis";
+import { toast } from "react-toastify";
+import OTP, { type OTPProps } from "antd/es/input/OTP";
+import type { GetProp } from "antd";
+
+const stylesFnOTP: OTPProps['styles'] = (info): GetProp<OTPProps, 'styles', 'Return'> => {
+  if (info.props.size === 'medium') {
+    return {
+      root: {
+        borderWidth: 0,
+        columnGap: 6,
+        margin: '0 auto'
+      },
+      input: {
+        borderColor: 'var(--primary)',
+        width: 32,
+        height: 32,
+      },
+    };
+  }
+  return {};
+};
 
 const useAppDispatch = () => useDispatch<AppDispatch>();
 
 const Auth = (AuthProps: AuthPropsType) => {
 
     const dispatch = useAppDispatch();
-    const {hasHousehold,loading,token} = useAuthAndHouseholdCheck();
+    const {hasHousehold,loading,token,setLoading} = useAuthAndHouseholdCheck();
     const navigate = useNavigate();
+    const [otpBox,setOtpBox] = useState(false);
 
     const {
         register,
         handleSubmit,
+        control,
         formState: {
             errors
         }
@@ -31,14 +56,43 @@ const Auth = (AuthProps: AuthPropsType) => {
     useEffect(() => {
         if (token && hasHousehold) {
             navigate("/dashboard");
-        } 
+        } else if(token && !hasHousehold) {
+            navigate("/");
+        }
     }, [token,hasHousehold,navigate])
 
     const onSubmit = (data: AuthFormValue) => {
         if (AuthProps.isLogin) {
             dispatch(loginAction({email: data.email, password: data.password}, navigate));
         } else {
-            dispatch(signupAction(data.name!, data.email, data.password, navigate));
+            (async () => {
+
+                try {
+                    
+                    const response = await APIService(
+                        API_AUTH.otp,
+                        "POST",
+                        {
+                            email: data.email
+                        }   
+                    )
+
+                    if(response.status === 200) {
+                        toast.success("OTP sent successfully");
+                        setOtpBox(true);
+                        setLoading(true);
+                    }
+                    
+                } catch (error) {
+                    toast.error("Failed to send OTP");
+                }
+
+                
+            })();
+
+            // done: when clicked on verify otp
+            // dispatch(signupAction(data.name!, data.email, data.password,data.otp!, navigate));
+            
         }
     };
 
@@ -58,7 +112,7 @@ const Auth = (AuthProps: AuthPropsType) => {
                                 ...register("name", {
                                     required: "Name is required"
                                 })
-                            } 
+                            }
                         />
                         {errors.name && <span className="text-red-500 text-xs">{errors.name.message as string}</span>}
                     </StyledFormControl>
@@ -107,7 +161,7 @@ const Auth = (AuthProps: AuthPropsType) => {
                 text={AuthProps.isLogin ? "Login" : "Sign Up"}
                 className="mt-4 py-1"
                 type="submit"
-                reactNode={loading ? <Loader/> : undefined}
+                reactNode={loading ? <Loader isButton/> : undefined}
             />
 
             <div className="flex justify-end">
@@ -117,6 +171,33 @@ const Auth = (AuthProps: AuthPropsType) => {
                     }
                 </Link>
             </div>
+
+            {
+                !AuthProps.isLogin && otpBox && (
+                    <Controller
+                        name="otp"
+                        control={control}
+                        rules={{
+                            required: "OTP is required",
+                            validate: (value) => String(value)?.length === 6 || "OTP must be 6 digits"
+                        }}
+                        render={({field}) => (
+                            <>
+                                <OTP
+                                    styles={stylesFnOTP} 
+                                    size="medium" 
+                                    length={6} 
+                                    separator="-" 
+                                    value={String(field.value || '')}
+                                    onChange={(value) => field.onChange(value)}
+                                />
+                                {errors.otp && <span className="text-red-500 text-xs">{errors.otp.message as string}</span>}
+                            </>
+
+                        )}
+                    />
+                )
+            }
         </form>
     )
 }

@@ -44,7 +44,7 @@ const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPage
     const tableColumns = ["Id", "Name", "Quantity", "Category", "Expiry","Status", "Added By", "Updated By", ...(isInventory ? ["Actions"] : [])];
 
     return (
-        <Paper sx={{ width: '100%', height: '80%' }}>
+        <Paper sx={{ width: '100%', height: '100%', overflow: "scroll" }}>
 
 
             {

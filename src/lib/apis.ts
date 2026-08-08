@@ -27,7 +27,9 @@ const API_ITEMS = {
 
 const API_DASHBOARD = {
     stats: '/dashboard/stats',
-    expiring: '/dashboard/expiring'
+    expiring: '/dashboard/expiring',
+    leaderboard: '/dashboard/leaderboard',
+    notifications: '/notifications'
 }
 
 export {

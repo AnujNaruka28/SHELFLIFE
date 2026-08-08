@@ -2,6 +2,7 @@ import { API_DASHBOARD } from "../apis";
 import { APIMethods, APIService } from "../APIService";
 import { failGetDashboard, failGetExpiringItems, getDashboard, getExpiringItems, setDashboard, setExpiringItems } from "../features/dashboardSlice"
 import { toast } from 'react-toastify';
+import { failGetLeaderboard, getLeaderboard, setLeaderboard } from "../features/leaderboardSlice";
 
 const statsAction = () => {
     return async (dispatch: any) => {
@@ -53,9 +54,32 @@ const expiringItemsAction = () => {
     }
 }
 
+const leaderboardAction = () => {
+    return async (dispatch: any) => {
+        try {
+            dispatch(getLeaderboard());
+            
+            const leaderboardResponse = await APIService(
+                API_DASHBOARD.leaderboard,
+                APIMethods.GET
+            )
+
+            console.log(leaderboardResponse);
+            
+            dispatch(setLeaderboard(leaderboardResponse.data.data));
+            
+            toast.success("Leaderboard fetched successfully");
+            
+        } catch (error) {
+            dispatch(failGetLeaderboard());
+            toast.error("Failed to fetch leaderboard");
+        }   
+    }
+}
 
 
 export {
     statsAction,
-    expiringItemsAction
+    expiringItemsAction,
+    leaderboardAction
 }
