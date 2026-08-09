@@ -23,9 +23,9 @@ const loginAction = (loginData: { email: string; password: string }, navigate: N
             navigate('/dashboard');
             
             toast.success("Login successful");
-        } catch (error) {
+        } catch (error: any) {
             dispatch(authFailure());
-            toast.error("Login failed");
+            toast.error(error.message);
         }
     };
 };
@@ -49,9 +49,9 @@ const signupAction = (name: string, email: string, password: string, otp: number
             navigate('/dashboard');
             
             toast.success("Signup successful");
-        } catch (error) {
+        } catch (error: any) {
             dispatch(authFailure());
-            toast.error("Signup failed");
+            toast.error(error.message);
         }
     };
 };

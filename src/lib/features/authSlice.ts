@@ -5,7 +5,8 @@ const initialAuthState = {
     error: false,
     user: null,
     token: null,
-    inviteCode: null
+    inviteCode: null,
+    householdName: null
 };
 
 const authSlice = createSlice({
@@ -27,6 +28,10 @@ const authSlice = createSlice({
             state.inviteCode = action.payload;
         },
 
+        setHouseholdName: (state, action) => {
+            state.householdName = action.payload;
+        },
+
         authFailure: (state) => {
             state.loading = false;
             state.error = true;
@@ -40,5 +45,5 @@ const authSlice = createSlice({
     }
 });
 
-export const { authStart, authSuccess, authFailure, logout, setInviteCode } = authSlice.actions;
+export const { authStart, authSuccess, authFailure, logout, setInviteCode, setHouseholdName } = authSlice.actions;
 export default authSlice.reducer;

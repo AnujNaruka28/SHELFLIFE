@@ -4,7 +4,8 @@ import { lazy, useEffect } from "react";
 import useAuthAndHouseholdCheck from "../hooks/useAuthAndHouseholdCheck";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../components/common/Loader";
-const LazyJoinDialog = lazy(() => import("../components/dialogs/JoinDialog"));
+
+const LazyHouseholdDialog = lazy(() => import("../components/dialogs/HouseholdDialog"));
 
 const Home = () => {
 
@@ -15,7 +16,7 @@ const Home = () => {
     if (token && hasHousehold) {
       navigate("/dashboard");
     } 
-  }, [token,hasHousehold,navigate])
+  }, [token,hasHousehold,navigate]);
 
   if(loading) {
     return <Loader/>;
@@ -23,10 +24,12 @@ const Home = () => {
 
   return (
     <>
-      <CTAButton
-        text="Create"
-        className="py-1"
-      />
+      <LazyHouseholdDialog title="Create Household" mode="create">
+        <CTAButton
+          text="Create"
+          className="py-1"
+        />
+      </LazyHouseholdDialog>
 
       <div className="flex gap-2 items-center">
         <div className="w-full h-[1px] bg-border my-4"/>
@@ -40,12 +43,12 @@ const Home = () => {
         <div className="w-full h-[1px] bg-border my-4"/>
       </div>
 
-      <LazyJoinDialog title="Join Household">
+      <LazyHouseholdDialog title="Join Household" mode="join">
         <CTAButton
         text="Join"
         className="py-1"
         />
-      </LazyJoinDialog>
+      </LazyHouseholdDialog>
 
       <div className="flex justify-end">
         <Link to="/register" className="text-blue-500 hover:underline">

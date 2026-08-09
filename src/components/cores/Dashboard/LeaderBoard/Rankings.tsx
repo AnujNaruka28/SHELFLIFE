@@ -32,6 +32,10 @@ const Rankings: React.FC<RankingsProps> = ({ rankings, currentUserId }) => {
     }
   };
 
+  if(!rankings || rankings.length === 0) {
+    return null;
+  }
+
   return (
     <Paper sx={{ width: '100%' }}>
       <TableContainer>

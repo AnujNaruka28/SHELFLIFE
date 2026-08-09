@@ -24,7 +24,7 @@ const SideNavOptions = () => {
                     <li key={item.label}>
                         <Link to={item.path} className={`text-left px-3 py-2 rounded flex items-center gap-2
                         ${active ? 'ring-sidebar-ring data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground' : 'text-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'}`}>
-                            {icons[item.icon]}
+                            {icons[item.icon as keyof typeof icons]}
                             {item.label}
                         </Link>
                     </li>

@@ -20,7 +20,23 @@ const Podium: React.FC<PodiumProps> = ({ rankings }) => {
         top3.find((r) => r.rank === 3),
     ].filter(Boolean) as LeaderboardRanking[];
 
-    if (podiumOrder.length === 0) return null;
+    if (podiumOrder.length === 0) {
+        return (
+            <Box 
+                sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    height: '100%',
+                    py: 8
+                }}
+            >
+                <Typography variant="body1" color="text.secondary">
+                    No leaderboard data available
+                </Typography>
+            </Box>
+        );
+    }
 
     const getMedalConfig = (rank: number) => {
         switch (rank) {

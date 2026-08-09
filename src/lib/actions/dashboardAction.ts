@@ -20,9 +20,9 @@ const statsAction = () => {
 
             toast.success("Dashboard stats fetched successfully");
             
-        } catch (error) {
+        } catch (error: any) {
             dispatch(failGetDashboard());
-            toast.error("Failed to fetch dashboard stats");
+            toast.error(`Failed to fetch dashboard stats ${error.message}`);
         }
     }
 }
@@ -47,9 +47,9 @@ const expiringItemsAction = () => {
 
             toast.success("Expiring items fetched successfully");
             
-        } catch (error) {
+        } catch (error: any) {
             dispatch(failGetExpiringItems());
-            toast.error("Failed to fetch expiring items");
+            toast.error(`Failed to fetch expiring items ${error.message}`);
         }
     }
 }
@@ -70,9 +70,9 @@ const leaderboardAction = () => {
             
             toast.success("Leaderboard fetched successfully");
             
-        } catch (error) {
+        } catch (error: any) {
             dispatch(failGetLeaderboard());
-            toast.error("Failed to fetch leaderboard");
+            toast.error(`Failed to fetch leaderboard ${error.message}`);
         }   
     }
 }

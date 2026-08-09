@@ -6,8 +6,10 @@ import CTAButton from "../components/common/CTAButton";
 import { FiLogOut } from "react-icons/fi";
 import { ImExit } from "react-icons/im";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../lib/features/authSlice";
+import { authSuccess, logout } from "../lib/features/authSlice";
 import type { AppDispatch } from "../lib/store";
+import { API_HOUSEHOLD } from "../lib/apis";
+import { APIMethods, APIService } from "../lib/APIService";
 
 const useAppDispatch = () => useDispatch<AppDispatch>();
 
@@ -37,6 +39,24 @@ const Settings = () => {
         dispatch(logout());
         localStorage.removeItem("persist:root");
         navigate("/login");
+    }
+
+    const handleExitHousehold = async () => {
+        try {
+            const leaveResponse = await APIService(
+                API_HOUSEHOLD.leave,
+                APIMethods.POST
+            );
+            if (leaveResponse.status === 200) {
+                dispatch(authSuccess({
+                  user: leaveResponse.data.data.user,
+                  token: leaveResponse.data.data.token
+                }));
+                navigate("/");
+            }
+        } catch (error) {
+            console.error("Error leaving household:", error);
+        }
     }
 
     return (
@@ -110,6 +130,7 @@ const Settings = () => {
                             <CTAButton
                                 reactNode={<ImExit className="h-4 w-4" />}
                                 className="p-3 rounded-full bg-primary text-primary-foreground"
+                                onClick={handleExitHousehold}
                             />
                         </Tooltip>
 

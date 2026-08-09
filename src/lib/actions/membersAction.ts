@@ -19,9 +19,9 @@ const getMembers = () => {
             dispatch(setMembers(membersResponse.data.data));
 
             toast.success("Members fetched successfully");
-        } catch (error) {
+        } catch (error: any) {
             dispatch(getMembersFailure("Failed to fetch members"));
-            toast.error("Failed to fetch members");
+            toast.error(`Failed to fetch members ${error.message}`);
         }
     }
 }
