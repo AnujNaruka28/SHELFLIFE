@@ -48,6 +48,7 @@ const Auth = (AuthProps: AuthPropsType) => {
         register,
         handleSubmit,
         control,
+        getValues,
         formState: {
             errors
         }
@@ -90,10 +91,18 @@ const Auth = (AuthProps: AuthPropsType) => {
                 
             })();
 
-            // done: when clicked on verify otp
-            // dispatch(signupAction(data.name!, data.email, data.password,data.otp!, navigate));
-            
         }
+    };
+
+    const handleVerifyOTP = () => {
+        const formData = getValues();
+        dispatch(signupAction(
+            formData.name!, 
+            formData.email, 
+            formData.password, 
+            Number(formData.otp!), 
+            navigate
+        ));
     };
 
     return (
@@ -161,7 +170,8 @@ const Auth = (AuthProps: AuthPropsType) => {
                 text={AuthProps.isLogin ? "Login" : "Sign Up"}
                 className="mt-4 py-1"
                 type="submit"
-                reactNode={loading ? <Loader isButton/> : undefined}
+                reactNode={loading ? <Loader isButton={true}/> : undefined}
+                disabled={loading}
             />
 
             <div className="flex justify-end">
@@ -174,6 +184,9 @@ const Auth = (AuthProps: AuthPropsType) => {
 
             {
                 !AuthProps.isLogin && otpBox && (
+
+                    <div className="w-full flex flex-col">
+
                     <Controller
                         name="otp"
                         control={control}
@@ -196,6 +209,16 @@ const Auth = (AuthProps: AuthPropsType) => {
 
                         )}
                     />
+
+                    <CTAButton
+                        text="Verify OTP"
+                        className="mt-4 py-2 px-4 w-fit ml-auto"
+                        type="button"
+                        onClick={handleVerifyOTP}
+                        disabled={loading}
+                    />
+
+                    </div>
                 )
             }
         </form>

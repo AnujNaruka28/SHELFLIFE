@@ -16,16 +16,21 @@ const getItemsAction = (queries: {category?: string, status?: string, page: numb
                 queries
             );
 
-            // API now returns { data: { data: items, total, page, pages } }
-            const itemsArray = itemResponse.data.data.data;
-            const totalItems = itemResponse.data.data.total;
+            if(itemResponse.status === 204 || !itemResponse.data?.data) {
+                dispatch(setItems({ items: [], totalItems: 0 }));
+                toast.success("Items loaded.");
+            } else {
+                const itemsArray = itemResponse.data.data.data;
+                const totalItems = itemResponse.data.data.total;
             
-            dispatch(setItems({ items: itemsArray, totalItems }));
-            toast.success("Items loaded.");
+                dispatch(setItems({ items: itemsArray, totalItems }));
+                toast.success("Items loaded.");
+            }
 
-        } catch (error) {
+        } catch (error: any) {
             dispatch(itemFail());
-            toast.error("Items failed to fetch.");
+            const errorMessage = error?.message || error?.response?.data?.message || "Unknown error";
+            toast.error(`Items failed to fetch ${errorMessage}`);
         }
     }
 };
@@ -48,9 +53,9 @@ const createItemAction = (itemData: ItemFormValue) => {
                 return true;
             }
 
-        } catch (error) {
+        } catch (error: any) {
             dispatch(itemFail());
-            toast.error("Item failed to create.");
+            toast.error(`Item failed to create ${error.message}`);
             return false;
         }
     }
@@ -74,9 +79,9 @@ const updateItemByIdAction = (payload: {id: string, data: ItemFormValue}) => {
                 return true;
             }
 
-        } catch (error) {
+        } catch (error: any) {
             dispatch(itemFail());
-            toast.error("Item failed to update.");
+            toast.error(`Item failed to update ${error.message}`);
             return false;
         }
     }
@@ -98,9 +103,9 @@ const deleteItemByIdAction = (id: string) => {
                 return true;
             }
 
-        } catch (error) {
+        } catch (error: any) {
             dispatch(itemFail());
-            toast.error("Item failed to delete.");
+            toast.error(`Item failed to delete ${error.message}`);
             return false;
         }
     }
@@ -123,9 +128,9 @@ const updateItemStatusAction = (payload: {id: string, status: "used" | "wasted"}
                 return true;
             }
 
-        } catch (error) {
+        } catch (error: any) {
             dispatch(itemFail());
-            toast.error("Item failed to update status.");
+            toast.error(`Item failed to update status ${error.message}`);
             return false;
         }
     }

@@ -50,8 +50,11 @@ const DashboardLayout = () => {
                         <VscMenu size={18} className="text-muted-foreground" />
                     </NavButton>
 
-                    <NavButton onClick={() => setNotification(prev => !prev)}>
+                    <NavButton onClick={() => setNotification(prev => !prev)}
+                    className="relative">
                         <FaRegBell size={18} className="text-muted-foreground" />
+                        <div
+                        className="w-1.5 h-1.5 rounded-full bg-red-500 absolute top-0 right-0"/>
                     </NavButton>
 
                     {
@@ -61,7 +64,7 @@ const DashboardLayout = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.2 }}
-                                className="w-[280px] h-[360px] bg-[#fff] absolute right-12 top-8 z-10 px-4 py-2 flex flex-col items-center justify-center
+                                className="w-[280px] h-[360px] bg-[#fff] absolute right-12 top-8 z-10 px-4 py-2 flex flex-col items-center
                                 shadow-[-1px_0px_1px_0px_#e4e4e7_inset,1px_0px_1px_0px_#e4e4e7_inset,0px_0.125rem_1px_0px_#d4d4d8_inset]">
 
                                     <motion.p

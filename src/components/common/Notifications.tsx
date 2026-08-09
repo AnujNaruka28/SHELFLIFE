@@ -15,6 +15,10 @@ const Notifications = () => {
                     API_DASHBOARD.notifications,
                     "GET"
                 );
+                if(notifications.status === 204) {
+                    setNotifyingItems([]);
+                    return;
+                }
                 setNotifyingItems(notifications.data.data);
             } catch (error) {
                 console.error("Failed to fetch notifications:", error);
@@ -28,6 +32,10 @@ const Notifications = () => {
 
     if (loading) {
         return <Loader />;
+    }
+
+    if (notifyingItems.length === 0) {
+        return <p className="text-center text-sm text-muted-foreground">No notifications</p>;
     }
 
     return (

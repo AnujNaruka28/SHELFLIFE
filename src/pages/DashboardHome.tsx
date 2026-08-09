@@ -8,6 +8,7 @@ import { useEffect } from "react"
 import { expiringItemsAction, statsAction } from "../lib/actions/dashboardAction"
 import { Skeleton } from "@mui/material"
 import { PieChart, Pie, ResponsiveContainer, Tooltip } from 'recharts' // Removed Cell import
+import CommonError from "../components/common/CommonError"
 
 const CommonCard = ({ children, isTableBox = false }: { children: React.ReactNode, isTableBox?: boolean }) => {
     return (
@@ -87,7 +88,7 @@ const DashboardHome = () => {
                         ))
                     ) : (
 
-                        statsFetchError ? (<></>) : (
+                        statsFetchError ? (<CommonError/>) : (
                         
                             structuredStats.map(stat => (
                                 stat.status !== "Used" && stat.status !== "Wasted" &&

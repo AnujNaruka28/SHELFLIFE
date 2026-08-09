@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { APIMethods,APIService } from "../lib/APIService";
 import { API_HOUSEHOLD } from "../lib/apis";
 import { toast } from "react-toastify";
-import { setInviteCode } from "../lib/features/authSlice";
+import { setInviteCode, setHouseholdName } from "../lib/features/authSlice";
 
 const useAuthAndHouseholdCheck = () => {
     
@@ -39,11 +39,12 @@ const useAuthAndHouseholdCheck = () => {
                 if (response.data.data) {
                     setHasHousehold(true);
                     dispatch(setInviteCode(response.data.data.inviteCode));
+                    dispatch(setHouseholdName(response.data.data.name));
                 } else {
                     navigate("/");
                 }
-            } catch (error) {
-                toast.error("Failed to load household data");
+            } catch (error: any) {
+                toast.error("Join or create Household to continue");
                 navigate("/");
             } finally {
                 setLoading(false);

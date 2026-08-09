@@ -10,6 +10,7 @@ import TablePagination from '@mui/material/TablePagination';
 import type { Item } from "../../../types/Item";
 import { Row } from "./Rows";
 import Loader from '../../common/Loader';
+import CommonError from '../../common/CommonError';
 
 interface ItemTableProps {
     data: Item[];
@@ -50,9 +51,9 @@ const ItemTable = ({ data, itemsLoading, itemsError, onPageChange, onRowsPerPage
             {
                 itemsLoading ? (<Loader/>) : 
                 itemsError ? (
-                    <></> 
+                    <CommonError />
                 ) : (
-                    data.length > 0 ? (
+                    data && data.length > 0 ? (
                     
                     <> 
                         <TableContainer sx={{ height: '80%' }}>
