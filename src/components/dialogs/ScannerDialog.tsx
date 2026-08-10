@@ -1,27 +1,67 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, FormControl, OutlinedInput } from "@mui/material";
 import React, { useState } from "react";
 import CTAButton from "../common/CTAButton";
 import { AnimatePresence, motion } from "motion/react";
 import BarcodeScanner from "react-qr-barcode-scanner";
+import { toast } from "react-toastify";
+import { useBarcode } from "../../contexts/BarcodeContext";
+import { API_OPEN_FOOD_FACTS } from "../../lib/apis";
 
-const ScannerDialog = ({ children, onScan } : { children: React.ReactNode, onScan?: (barcode: string) => void }) => {
+const ScannerDialog = ({ children } : { children: React.ReactNode }) => {
 
     const [open,setOpen] = useState<boolean>(false);
     const [scanner,setScanner] = useState<boolean>(false);
+    const [barcode,setBarcode] = useState<string>('');
+    const { setScannedData } = useBarcode();
 
     const handleOpen = () => {
-        setOpen(true);
-        setScanner(true);
+      setOpen(true);
+      setScanner(true);
     }
 
     const handleClose = () => {
-        setOpen(false);
-        setScanner(false);
+      setOpen(false);
+      setScanner(false);
     }
 
-    const handleScan = (barcode: string) => {
+    const fetchProductData = async (barcode: string) => {
+        try {
+            const response = await fetch(
+              API_OPEN_FOOD_FACTS.product(barcode)
+            );
+            const data = await response.json();
+            
+            if (data.status === 1 && data.product) {
+                return {
+                    name: data.product.product_name || '',
+                    quantity: data.product.serving_quantity || 1,
+                    barcode: barcode
+                };
+            }
+            return null;
+        } catch (error) {
+            console.error('Error fetching product data:', error);
+            return null;
+        }
+    };
+
+    const handleScan = async (barcode: string) => {
         console.log('Scanned:', barcode);
-        onScan?.(barcode);
+        
+        const productData = await fetchProductData(barcode);
+        
+        if (productData) {
+            toast.success('Product data fetched successfully');
+            setScannedData(productData);
+        } else {
+            toast.warning('Product not found in database, using barcode only');
+            setScannedData({
+                name: '',
+                quantity: 1,
+                barcode: barcode
+            });
+        }
+        
         handleClose();
     }
 
@@ -53,7 +93,7 @@ const ScannerDialog = ({ children, onScan } : { children: React.ReactNode, onSca
               transition={{ duration: 0.2 }}
             >
               <DialogTitle className="text-center text-foreground">Scan Item Barcode</DialogTitle>
-              <DialogContent>
+              <DialogContent className="flex flex-col gap-4">
                 {
                     scanner && (
                         <BarcodeScanner
@@ -66,12 +106,33 @@ const ScannerDialog = ({ children, onScan } : { children: React.ReactNode, onSca
                         />
                     )
                 }
+                <FormControl>
+                  <OutlinedInput
+                    placeholder="Enter barcode manually"
+                    id="barcode"
+                    name="barcode"
+                    value={barcode}
+                    onChange={(e) => setBarcode(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && barcode) {
+                        handleScan(barcode);
+                      }
+                    }}
+                  />
+                </FormControl>
               </DialogContent>
               <DialogActions
                 sx={{
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  gap: 2
                 }}
               >
+                <CTAButton
+                  text="Use"
+                  onClick={() => barcode && handleScan(barcode)}
+                  className="px-4 py-2"
+                  disabled={!barcode}
+                />
                 <CTAButton
                   text="Cancel"
                   onClick={handleClose}
