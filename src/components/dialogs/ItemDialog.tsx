@@ -13,10 +13,13 @@ import { createItemAction, updateItemByIdAction } from "../../lib/actions/itemsA
 import type { AppDispatch } from "../../lib/store";
 const useAppDispatch = () => useDispatch<AppDispatch>();
 
-const ItemDailog = ({title, children, mode = "create", onSuccess, item} : ItemDialogProps) => {
+const ItemDailog = ({title, children, mode = "create", onSuccess, item, initialData, open: controlledOpen, onOpenChange} : ItemDialogProps) => {
 
-    const [open,handleOpen] = useState(false);
+    const [internalOpen, setInternalOpen] = useState(false);
     const dispatch = useAppDispatch();
+    
+    const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+    const setOpen = onOpenChange || setInternalOpen;
 
     const {
         register,
@@ -27,7 +30,7 @@ const ItemDailog = ({title, children, mode = "create", onSuccess, item} : ItemDi
             errors
         }
     } = useForm<ItemFormValue>({
-        defaultValues: mode === "edit" && item ? {
+        defaultValues: initialData || (mode === "edit" && item ? {
             name: item.name,
             category: item.category,
             expiryDate: item.expiryDate.toString(),
@@ -37,11 +40,13 @@ const ItemDailog = ({title, children, mode = "create", onSuccess, item} : ItemDi
             category: 'other',
             expiryDate: '',
             quantity: 1
-        }
+        })
     });
 
     useEffect(() => {
-        if (mode === "edit" && item) {
+        if (initialData) {
+            reset(initialData);
+        } else if (mode === "edit" && item) {
             reset({
                 name: item.name,
                 category: item.category,
@@ -56,21 +61,22 @@ const ItemDailog = ({title, children, mode = "create", onSuccess, item} : ItemDi
                 quantity: 1
             })
         }
-    }, [mode, item, reset]);
+    }, [mode, item, initialData, reset]);
 
     const childWithOnClick = React.cloneElement(children as React.ReactElement, {
-        onClick: handleOpen
+        onClick: () => setOpen(true)
     } as any);
 
-    const handleClose = () => handleOpen(false);
+    const handleClose = () => setOpen(false);
 
     const onSubmit = async (data: ItemFormValue) => {
         let success = false;
+        const { barcode, ...submitData } = data;
         if(mode === "create") {
-            success = await dispatch(createItemAction(data)) || false;
+            success = await dispatch(createItemAction(submitData)) || false;
         } else if(mode === "edit" && item) {
             // TODO: Implement update item action
-            success = await dispatch(updateItemByIdAction({id: item._id, data})) || false;
+            success = await dispatch(updateItemByIdAction({id: item._id, data: submitData})) || false;
         }
         if(success) {
             handleClose();
@@ -172,6 +178,23 @@ const ItemDailog = ({title, children, mode = "create", onSuccess, item} : ItemDi
                                         />
                                         {errors.name && <span className="text-red-500 text-xs">{errors.name.message as string}</span>}
                                     </FormControl>
+
+                                    {initialData?.barcode && (
+                                        <FormControl>
+                                            <OutlinedInput
+                                                placeholder="Barcode"
+                                                id="item-barcode"
+                                                value={initialData.barcode}
+                                                disabled
+                                                sx={{
+                                                    '& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline': {
+                                                    borderColor: 'var(--border)'
+                                                    },
+                                                    backgroundColor: '#f5f5f5'
+                                                }}
+                                            />
+                                        </FormControl>
+                                    )}
 
                                     <FormControl variant="outlined" sx={{minWidth: 120 }}>
                                         <InputLabel id="demo-simple-select-outlined-label">Category</InputLabel>

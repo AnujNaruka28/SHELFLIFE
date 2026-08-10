@@ -24,6 +24,9 @@ const API_ITEMS = {
     itemStatus: (itemId: string) => `/items/${itemId}/status`
 }
 
+const API_OPEN_FOOD_FACTS = {
+    product: (barcode: string) => `https://world.openfoodfacts.net/api/v2/product/${barcode}.json?fields=product_name,serving_quantity`
+}
 
 const API_DASHBOARD = {
     stats: '/dashboard/stats',
@@ -37,5 +40,6 @@ export {
     API_PROFILE,
     API_ITEMS,
     API_DASHBOARD,
-    API_HOUSEHOLD
+    API_HOUSEHOLD,
+    API_OPEN_FOOD_FACTS
 }

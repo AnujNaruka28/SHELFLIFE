@@ -17,6 +17,7 @@ import { Provider } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import { PersistGate } from 'redux-persist/integration/react'
+import { BarcodeProvider } from './contexts/BarcodeContext'
 
 const routes = createBrowserRouter([
   {
@@ -60,7 +61,11 @@ const routes = createBrowserRouter([
       },
       {
         path: 'inventory',
-        element: <InventoryPage />
+        element: (
+          <BarcodeProvider>
+            <InventoryPage />
+          </BarcodeProvider>
+        )
       },
       {
         path: 'leaderboard',

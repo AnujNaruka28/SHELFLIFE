@@ -3,11 +3,13 @@ import { FaSearch } from "react-icons/fa";
 import { LiaBarcodeSolid } from "react-icons/lia";
 import ItemTable from "../components/cores/Table/ItemTable";
 import { useDispatch, useSelector } from "react-redux";
-import { lazy, useEffect, useState } from "react";
+import { lazy, useEffect, useState, useMemo } from "react";
 import { getItemsAction } from "../lib/actions/itemsAction";
 import type { AppDispatch } from "../lib/store";
 import { useDebounce } from "../hooks/useDebounce";
 import CTAButton from "../components/common/CTAButton";
+import { useBarcode } from "../contexts/BarcodeContext";
+import type { ItemFormValue } from "../types/ItemFormValue";
 const useAppDispatch = () => useDispatch<AppDispatch>();
 const LazyItemDialog = lazy(() => import('../components/dialogs/ItemDialog'));
 const LazyScannerDialog = lazy(() => import('../components/dialogs/ScannerDialog'));
@@ -18,12 +20,33 @@ const InventoryPage = () => {
     const [limit, setLimit] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
     const [refetchTrigger,setRefechTrigger] = useState(0);
+    const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
+    const { scannedData, clearScannedData } = useBarcode();
 
     const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
+    const initialData = useMemo(() => {
+        if (!scannedData) return null;
+        return {
+            name: scannedData.name,
+            quantity: scannedData.quantity,
+            category: 'other' as const,
+            expiryDate: '',
+            barcode: scannedData.barcode
+        } as ItemFormValue;
+    }, [scannedData]);
+
     const handleItemCreated = () => {
         setRefechTrigger(prev => prev + 1);
+        clearScannedData();
+        setIsItemDialogOpen(false);
     }
+
+    useEffect(() => {
+        if (scannedData) {
+            setIsItemDialogOpen(true);
+        }
+    }, [scannedData]);
 
     const { totalItems, items, loading, error } = useSelector((state: any) => state.items);
     const dispatch = useAppDispatch();
@@ -86,7 +109,14 @@ const InventoryPage = () => {
 
                 <div className="w-full flex flex-col min-[768px]:flex-row min-[768px]:items-center gap-2">
             
-                    <LazyItemDialog title="Add Item" mode="create" onSuccess={handleItemCreated}>
+                    <LazyItemDialog 
+                        title="Add Item" 
+                        mode="create" 
+                        onSuccess={handleItemCreated}
+                        initialData={initialData}
+                        open={isItemDialogOpen}
+                        onOpenChange={setIsItemDialogOpen}
+                    >
                         <CTAButton
                             text="Add Item"
                             className="py-1 min-[768px]:w-[50%]"
