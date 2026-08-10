@@ -22,7 +22,7 @@ const Leaderboard = () => {
 
   return (
     <Paper className="w-full h-full overflow-hidden overflow-y-auto flex flex-col gap-4 p-4">
-      <Stack spacing={4} sx={{
+      <Stack spacing={2} sx={{
         ...(leaderboard ? { height: '100%' } : {})
       }}>
         <Podium rankings={leaderboard.slice(0, 3)} />

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import Notifications from "../components/common/Notifications";
+import { useNotifications } from "../hooks/useNotifications";
 
 const DashboardLayout = () => {
     const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const DashboardLayout = () => {
     const pathSegments = useLocation().pathname.split('/');
     const feature = pathSegments.length === 2 ? pathSegments[1] : pathSegments[pathSegments.length-1];
     const [notification,setNotification] = useState(false);
+    const { notifyingItems } = useNotifications();
 
     const notificationRef = useRef<HTMLDivElement>(null);
 
@@ -52,9 +54,11 @@ const DashboardLayout = () => {
 
                     <NavButton onClick={() => setNotification(prev => !prev)}
                     className="relative">
-                        <FaRegBell size={18} className="text-muted-foreground" />
-                        <div
-                        className="w-1.5 h-1.5 rounded-full bg-red-500 absolute top-0 right-0"/>
+                        <FaRegBell size={18} className="text-muted-foreground" /> 
+                        {
+                            notifyingItems.length > 0 && 
+                            <div className="w-1.5 h-1.5 rounded-full bg-red-500 absolute top-0 right-0"/>
+                        }
                     </NavButton>
 
                     {
