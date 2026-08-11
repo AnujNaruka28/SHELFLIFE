@@ -12,7 +12,7 @@ import CommonError from "../components/common/CommonError"
 
 const CommonCard = ({ children, isTableBox = false }: { children: React.ReactNode, isTableBox?: boolean }) => {
     return (
-        <article className={`w-full h-[400px] ${isTableBox ? "min-[768px]:h-[86%]" : "min-[768px]:h-[14%] min-[768px]:flex-row"} bg-card shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] p-4
+        <article className={`w-full h-[240px] ${isTableBox ? "min-[768px]:h-[86%]" : "min-[768px]:h-[14%] min-[768px]:flex-row"} bg-card shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] p-4
         flex flex-col gap-4`}>
             {children}
         </article>
