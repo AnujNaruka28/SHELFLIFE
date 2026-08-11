@@ -38,7 +38,7 @@ const DashboardLayout = () => {
     }, [notification]);
 
     return (
-        <main className="w-screen h-dvh flex overflow-hidden">
+        <main className="w-screen h-dvh flex">
             
             {
                 open && (
