@@ -88,7 +88,7 @@ const DashboardLayout = () => {
                 
                 </nav>
 
-                <div className="w-full h-[calc(100vh-60px)]">
+                <div className="w-full flex-1 overflow-y-auto">
                     <div className="bg-muted w-full h-full overflow-x-hidden
                     flex flex-col items-start px-4 py-2 gap-2">
                         <motion.h1 
