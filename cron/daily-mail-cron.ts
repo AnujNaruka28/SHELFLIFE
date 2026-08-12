@@ -1,8 +1,8 @@
-import Item from "./models/Item.js";
-import { getMembersOfHousehold } from "./services/household.service.js";
-import mailSender from "./utils/mailSender.js";
+import Item from "../models/Item.js";
+import { getMembersOfHousehold } from "../services/household.service.js";
+import mailSender from "../utils/mailSender.js";
 
-const run = async () => {
+export const run = async () => {
     try {
        const items = await Item.find({ status: { $in : ["expiring-soon"]}});
 
@@ -41,5 +41,3 @@ const run = async () => {
         process.exit(1);
     }
 };
-
-run();

@@ -9,6 +9,7 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./open-api.json" with { type: "json" };
+import './cron/index.js'
 
 const app = express();
 

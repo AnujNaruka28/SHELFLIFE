@@ -1,7 +1,7 @@
-import connectDB from "./config/db.js";
-import { cleanExpiredItemsFromDBAfterMonth } from "./services/item.service.js";
+import connectDB from "../config/db.js";
+import { cleanExpiredItemsFromDBAfterMonth } from "../services/item.service.js";
 
-const run = async () => {
+export const run = async () => {
     try {
         await connectDB();
         await cleanExpiredItemsFromDBAfterMonth();
@@ -12,5 +12,3 @@ const run = async () => {
         process.exit(1);
     }
 }
-
-run();
