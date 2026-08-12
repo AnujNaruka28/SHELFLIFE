@@ -54,8 +54,9 @@ const MembersPage = () => {
                             gap: '1rem'
                         }}
                         >
-                            <img src={member.profileImage?.secure_url || ""} alt="" 
-                            className="w-32 h-32 rounded-full"/>    
+                            <img src={member.profileImage?.secure_url || ""} alt={member.name} 
+                            className="w-32 h-32 rounded-full"
+                            loading='lazy'/>    
                             
                             <div className="flex gap-2 items-center font-medium text-lg">
                                 {member.name}

@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { lazy, StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 // import App from './App.tsx'
@@ -8,7 +8,6 @@ import DashboardHome from './pages/DashboardHome.tsx'
 import MembersPage from './pages/MembersPage.tsx'
 import InventoryPage from './pages/InventoryPage.tsx'
 import Settings from './pages/Settings.tsx'
-import Leaderboard from './pages/Leaderboard.tsx'
 import HomeLayout from './layouts/HomeLayout.tsx'
 import Auth from './pages/Auth.tsx'
 import Home from './pages/HomePage.tsx'
@@ -18,6 +17,8 @@ import { ToastContainer } from 'react-toastify'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import { PersistGate } from 'redux-persist/integration/react'
 import { BarcodeProvider } from './contexts/BarcodeContext'
+import Loader from './components/common/Loader.tsx'
+const LeaderBoard = lazy(() => import('./pages/Leaderboard.tsx'))
 
 const routes = createBrowserRouter([
   {
@@ -69,7 +70,11 @@ const routes = createBrowserRouter([
       },
       {
         path: 'leaderboard',
-        element: <Leaderboard />
+        element: (
+          <Suspense fallback={<Loader/>}>
+            <LeaderBoard />
+          </Suspense>
+        )
       }
     ]
   }
