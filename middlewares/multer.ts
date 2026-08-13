@@ -1,21 +1,12 @@
 import multer, { diskStorage, type FileFilterCallback } from "multer";
 import path from "node:path";
-import fs from "node:fs";
 import type { Request } from "express";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
-const tempDirectory = path.join(process.cwd(), 'tmp');
-
-if(!fs.existsSync(tempDirectory)) {
-    fs.mkdirSync(tempDirectory, {
-        recursive: true
-    });
-}
-
 const storageConfiguration = diskStorage({
 
-    destination: (_req: Request, _file: any, cb: (error: Error | null, destination: string) => void) => cb(null, tempDirectory),
+    destination: (_req: Request, _file: any, cb: (error: Error | null, destination: string) => void) => cb(null, 'tmp/'),
 
     filename: (_req: Request, file: any, cb: (error: Error | null, filename: string) => void) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
