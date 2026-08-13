@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 import type { Item } from "../../../types/Item";
-import { Row } from "./Rows";
+import Row from "./Rows";
 import Loader from '../../common/Loader';
 import CommonError from '../../common/CommonError';
 

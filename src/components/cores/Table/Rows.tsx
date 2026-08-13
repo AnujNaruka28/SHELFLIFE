@@ -16,6 +16,7 @@ import { deleteItemByIdAction, updateItemStatusAction } from '../../../lib/actio
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../../../lib/store';
 import { FiCheck, FiX } from 'react-icons/fi';
+import { useCallback } from 'react';
 const useAppDispatch = () => useDispatch<AppDispatch>();
 
 const LazyItemDialog = React.lazy(() => import('../../dialogs/ItemDialog'));
@@ -26,35 +27,35 @@ interface RowProps {
     onSuccess?: () => void;
 }
 
-export function Row(props: RowProps) {
+const statusColors = {
+    "fresh": "#22c55e",
+    "expiring-soon": "#eab308",
+    "expired": "#ef4444",
+    "used": "#3b82f6",
+    "wasted": "#6b7280"
+};
+
+const Row = React.memo((props: RowProps) => {
     const { row, index, isInventory = false, onSuccess } = props;
     const [open, setOpen] = React.useState(false);
     const dispatch = useAppDispatch();
 
     const {user} = useSelector((state: any) => state.auth)
-
-    const statusColors = {
-        "fresh": "#22c55e",
-        "expiring-soon": "#eab308",
-        "expired": "#ef4444",
-        "used": "#3b82f6",
-        "wasted": "#6b7280"
-    };
     
-    const handleDelete = async (id: string) => {
+    const handleDelete = useCallback(async (id: string) => {
         const success = await dispatch(deleteItemByIdAction(id)) || false;
         if(success) {
             onSuccess?.();
         }
-    };
+    }, [dispatch, onSuccess]);
 
-    const handleStatusToggle = async () => {
+    const handleStatusToggle = useCallback(async () => {
         const newStatus = row.status === "expired" ? "wasted" : "used";
         const success = await dispatch(updateItemStatusAction({ id: row._id, status: newStatus })) || false;
         if(success) {
             onSuccess?.();
         }
-    };
+    }, [dispatch, onSuccess, row._id, row.status]);
 
     const isUsedOrWasted = row.status === "used" || row.status === "wasted";
     
@@ -180,4 +181,6 @@ export function Row(props: RowProps) {
             </TableRow>
         </React.Fragment>
     );
-}
+});
+
+export default Row;

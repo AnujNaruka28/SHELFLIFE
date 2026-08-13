@@ -126,9 +126,6 @@ const Podium: React.FC<PodiumProps> = ({ rankings }) => {
                             style={{
                                 width: 80,
                                 backgroundColor: `var(${config.bgColor})`,
-                                borderRadius: 2,
-                                borderTopLeftRadius: 8,
-                                borderTopRightRadius: 8,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
