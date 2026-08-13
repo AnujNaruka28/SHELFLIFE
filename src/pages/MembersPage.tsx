@@ -7,15 +7,19 @@ import { useEffect } from "react";
 import type { AppDispatch } from "../lib/store";
 import { getMembers } from "../lib/actions/membersAction";
 import { Chip, Paper } from '@mui/material';
+import Loader from '../components/common/Loader';
 const useAppDispatch = () => useDispatch<AppDispatch>();
 const MembersPage = () => {
 
-    const {members} = useSelector((state: any) => state.members);
+    const {members, membersFetching} = useSelector((state: any) => state.members);
     const dispatch = useAppDispatch();
     
     useEffect( () => {
         dispatch(getMembers())
     },[])
+
+    if(membersFetching) return <Loader /> ;
+    
     return (
         <Swiper
         direction="vertical"
