@@ -63,9 +63,9 @@ const deleteProfilePicture = async (req: Request, res: Response) => {
     const userProfileDeleted = await deleteProfileFromUser(dbUser);
     if (!userProfileDeleted) return error(res, "Failed to delete user profile.");
 
-    if (dbUser.profileImage?.public_id) {
+    if (dbUser.profileImage?.public_id !== null) {
         try {
-            await deleteFromCloudinary(dbUser.profileImage.public_id);
+            await deleteFromCloudinary(dbUser.profileImage?.public_id!);
         } catch (err) {
             return error(res, `Failed to delete profile picture from cloudinary. Error: ${err}`);
         }

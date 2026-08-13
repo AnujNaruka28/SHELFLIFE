@@ -30,6 +30,7 @@ const UserSchema = new Schema<IUser>({
         },
         public_id: {
             type: String,
+            default: null,
         },
     },
     role: {
