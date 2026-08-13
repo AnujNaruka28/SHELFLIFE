@@ -4,6 +4,7 @@ import { deleteFromCloudinary, uploadToCloudinary } from "../utils/mediaUploader
 import type { CustomRequest } from "../types/CustomRequest.js";
 import { deleteProfileFromUser, updateUserProfile } from "../services/profile.service.js";
 import { findUserById } from "../services/authentication.service.js";
+import { generateToken } from "../utils/token.js";
 
 interface MulterRequest extends Request {
     file: any;
@@ -32,15 +33,21 @@ const updateProfilePicture = async (req: Request, res: Response) => {
     const storedImage = await uploadToCloudinary({
         filePath: profileImageFile.path,
         folderName: "user-profiles",
-        width: 24,
-        height: 24
+        width: 240,
+        height: 240
     })
 
     const updatedUser = await updateUserProfile(userId, storedImage);
 
     if (!updatedUser) return error(res, "Failed to update profile picture.");
 
-    return success(res, "User profile updated.", updatedUser);
+    const token = generateToken(updatedUser);
+    updatedUser.password = undefined;
+
+    return success(res, "User profile updated.", {
+        user: updatedUser,
+        token
+    });
 
 };
 
@@ -50,7 +57,6 @@ const deleteProfilePicture = async (req: Request, res: Response) => {
 
     if (!userId) return unauthorized(res, "User not found");
 
-    // Fetch the full user from the database
     const dbUser = await findUserById(userId);
     if (!dbUser) return unauthorized(res, "User not found");
 
@@ -65,7 +71,14 @@ const deleteProfilePicture = async (req: Request, res: Response) => {
         }
     }
 
-    return success(res, "User profile deleted.", userProfileDeleted);
+    
+    const token = generateToken(userProfileDeleted);
+    userProfileDeleted.password = undefined;
+
+    return success(res, "User profile deleted.", {
+        user: userProfileDeleted,
+        token
+    });
 };
 
 export {
