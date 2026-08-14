@@ -211,7 +211,7 @@ const Auth = (AuthProps: AuthPropsType) => {
                     />
 
                     <CTAButton
-                        text="Verify OTP"
+                        reactNode={loading ? <Loader/> : <>Verify OTP</>}
                         className="mt-4 py-2 px-4 w-fit ml-auto"
                         type="button"
                         onClick={handleVerifyOTP}
