@@ -12,7 +12,8 @@ import swaggerDocument from "./open-api.json" with { type: "json" };
 
 const app = express();
 
-app.set('trust proxy', true);
+// Trust proxy for Render and other cloud platforms (more specific than true)
+app.set('trust proxy', 1);
 
 // CORS configuration
 app.use(cors({

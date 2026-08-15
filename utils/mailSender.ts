@@ -25,18 +25,22 @@ async function mailSender(options: MailSenderOptions) {
 
         console.log('Sending emails to:', options.emails);
 
-        const emailPromises = options.emails.map(email =>
-            transporter.sendMail({
-                from: ENV.SMTP_FROM,
-                to: email,
-                subject: subject,
-                html: htmlContent,
-            })
-        );
+        for (const email of options.emails) {
+            try {
+                const info = await transporter.sendMail({
+                    from: ENV.SMTP_FROM,
+                    to: email,
+                    subject: subject,
+                    html: htmlContent,
+                });
+                console.log('Email sent successfully to:', email, 'Response:', info.messageId);
+            } catch (emailError) {
+                console.error('Failed to send email to:', email, 'Error:', emailError);
+                throw emailError;
+            }
+        }
 
-        await Promise.all(emailPromises);
-
-        console.log('Emails sent successfully');
+        console.log('All emails sent successfully');
         return { success: true, message: "Emails sent successfully" };
     } catch (err) {
         console.error("Error sending emails:", err);
