@@ -1,23 +1,8 @@
 import CommonMailTemplate from "../emails/CommonMailTemplate.js";
-import { Resend } from "resend";
-import EXP from "../validations/env.validation.js";
+import { MailSenderOptions } from "./MailSenderOptions.js";
+import ENV from "../validations/env.validation.js";
+import transporter from "../config/nodemailer.js";
 
-const resend = new Resend(EXP.RESEND_API_KEY);
-
-interface MailSenderOptions {
-    emails: string[];
-    otp?: number;
-    householdName?: string;
-    items?: Array<{
-        name: string;
-        quantity: number;
-        category: string;
-        expiryDate: Date;
-    }>;
-    isVerification?: boolean;
-    dailyDigest?: boolean;
-    subject?: string;
-}
 
 async function mailSender(options: MailSenderOptions) {
     try {
@@ -32,9 +17,9 @@ async function mailSender(options: MailSenderOptions) {
         const subject = options.subject || (options.isVerification ? "Verify your ShelfLife account" : "ShelfLife Daily Reminder");
 
         const emailPromises = options.emails.map(email =>
-            resend.emails.send({
-                from: "ShelfLife <onboarding@resend.dev>",
-                to: "shelflife.eco@gmail.com",
+            transporter.sendMail({
+                from: ENV.SMTP_FROM,
+                to: email,
                 subject: subject,
                 html: htmlContent,
             })

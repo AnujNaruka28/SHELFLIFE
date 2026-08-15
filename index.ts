@@ -9,7 +9,6 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./open-api.json" with { type: "json" };
-import './cron/index.js'
 
 const app = express();
 
@@ -68,6 +67,7 @@ app.use("/api/v1", routes.householdRouter);
 app.use("/api/v1", routes.itemRouter);
 app.use("/api/v1", routes.dashboardRouter);
 app.use("/api/v1", routes.profileRouter);
+app.use("/api/v1", routes.cronRouter);
 
 app.use(errorHandler);
 

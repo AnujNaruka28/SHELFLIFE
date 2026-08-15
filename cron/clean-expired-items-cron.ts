@@ -1,14 +1,14 @@
-import connectDB from "../config/db.js";
 import { cleanExpiredItemsFromDBAfterMonth } from "../services/item.service.js";
+import { Request, Response } from "express";
+import { error, success } from "../utils/response.js";
 
-export const run = async () => {
-    try {
-        await connectDB();
-        await cleanExpiredItemsFromDBAfterMonth();
-        console.log("Cleanup cron job completed successfully.");
-        process.exit(0);
-    } catch (err) {
-        console.error("Error in cron:", err);
-        process.exit(1);
-    }
+export const run = async (_req: Request,res: Response) => {
+    
+    await cleanExpiredItemsFromDBAfterMonth().then(() => {
+        success(res, "Cleanup cron job completed successfully.");
+    }).catch((err) => {
+        console.error("Error in cron item cleanup:", err);
+        error(res, "Error in cron item cleanup");
+    });
+    
 }

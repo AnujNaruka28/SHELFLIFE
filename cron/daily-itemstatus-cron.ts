@@ -1,17 +1,14 @@
-import connectDB from "../config/db.js";
 import { updateItemStatusCron } from "../services/item.service.js";
+import { Response } from "express";
+import { error, success } from "../utils/response.js";
 
-export const run = async () => {
-  try {
-    
-    await connectDB();
-    await updateItemStatusCron();
-    
-    console.log("Cron job completed successfully.");
-    process.exit(0);
+export const run = async (_req: any, res: Response) => {
 
-  } catch (err) {
-    console.error("Cron job failed:", err);
-    process.exit(1);
-  }
+  await updateItemStatusCron().then(() => {
+    success(res, "Cron job completed successfully.");
+  }).catch((err) => {
+    console.error("Error in cron item status update:", err);
+    error(res, "Error in cron item status update");
+  });
+    
 };

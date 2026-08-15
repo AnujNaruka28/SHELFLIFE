@@ -1,8 +1,10 @@
 import Item from "../models/Item.js";
 import { getMembersOfHousehold } from "../services/household.service.js";
 import mailSender from "../utils/mailSender.js";
+import { Response } from "express";
+import { error, success } from "../utils/response.js";
 
-export const run = async () => {
+export const run = async (_req: any, res: Response) => {
     try {
        const items = await Item.find({ status: { $in : ["expiring-soon"]}});
 
@@ -35,9 +37,9 @@ export const run = async () => {
        }
 
         console.log("Daily digest emails sent successfully.");
-        process.exit(0);
+        success(res, "Daily digest emails sent successfully.");
     } catch (err) {
         console.error("Cron job failed:", err);
-        process.exit(1);
+        error(res, "Cron job failed");
     }
 };
