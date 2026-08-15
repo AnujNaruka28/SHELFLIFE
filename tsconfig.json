@@ -14,6 +14,9 @@
     "outDir": "dist",
     "noEmit": false,
 
+    // Type resolution
+    "types": ["node"],
+
     // Best practices
     "strict": true,
     "skipLibCheck": true,
