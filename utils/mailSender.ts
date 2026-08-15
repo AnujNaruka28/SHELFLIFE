@@ -18,17 +18,18 @@ async function mailSender(options: MailSenderOptions) {
         const subject = options.subject || (options.isVerification ? "Verify your ShelfLife account" : "ShelfLife Daily Reminder");
 
         for (const email of options.emails) {
-            try {
-                await transporter.sendMail({
-                    from: ENV.SMTP_FROM,
-                    to: email,
-                    subject: subject,
-                    html: htmlContent,
-                });
-            } catch (emailError) {
+            await transporter.sendMail({
+                from: ENV.SMTP_FROM,
+                to: email,
+                subject: subject,
+                html: htmlContent,
+            }).then(() => {
+                console.log('Email sent successfully to:', email);
+            }).catch((emailError) => {
                 console.error('Failed to send email to:', email, 'Error:', emailError);
                 throw emailError;
-            }
+            });
+            
         }
 
         console.log('All emails sent successfully');
