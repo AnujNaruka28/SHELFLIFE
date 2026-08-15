@@ -1,4 +1,5 @@
-import * as nodemailer from "nodemailer";
+// @ts-ignore
+import nodemailer from "nodemailer";
 import ENV from "../validations/env.validation.js";
 
 const transporter = nodemailer.createTransport({
