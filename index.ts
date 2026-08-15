@@ -12,10 +12,6 @@ import swaggerDocument from "./open-api.json" with { type: "json" };
 
 const app = express();
 
-// Trust proxy for Render and other cloud platforms (more specific than true)
-app.set('trust proxy', 1);
-
-// CORS configuration
 app.use(cors({
     origin: ENV.ORIGIN,
     credentials: true,
@@ -25,18 +21,15 @@ app.use(cors({
 
 app.use(helmet());
 
-// Rate limiting for general API routes
 app.use(rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
     message: 'Too many requests from this IP, please try again after 15 minutes'
 }));
 
-// Parse JSON request bodies
 app.use(express.json());
 const PORT = ENV?.PORT || 4000;
 
-// Initialize database and cloudinary connections
 async function init() {
   await connectDB();
   await connectToCloudinary();
