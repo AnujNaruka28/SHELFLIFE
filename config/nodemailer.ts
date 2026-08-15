@@ -9,6 +9,9 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: ENV.SMTP_USER,
         pass: ENV.SMTP_PASS
+    },
+    tls: {
+        rejectUnauthorized: false // Allow self-signed certificates
     }
 });
 

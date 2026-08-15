@@ -6,6 +6,13 @@ import transporter from "../config/nodemailer.js";
 
 async function mailSender(options: MailSenderOptions) {
     try {
+        console.log('Email config check:', {
+            host: ENV.SMTP_HOST,
+            port: ENV.SMTP_PORT,
+            user: ENV.SMTP_USER,
+            from: ENV.SMTP_FROM
+        });
+
         const htmlContent = CommonMailTemplate({
             isVerification: options.isVerification || false,
             otp: options.otp,
@@ -15,6 +22,8 @@ async function mailSender(options: MailSenderOptions) {
         });
 
         const subject = options.subject || (options.isVerification ? "Verify your ShelfLife account" : "ShelfLife Daily Reminder");
+
+        console.log('Sending emails to:', options.emails);
 
         const emailPromises = options.emails.map(email =>
             transporter.sendMail({
@@ -27,6 +36,7 @@ async function mailSender(options: MailSenderOptions) {
 
         await Promise.all(emailPromises);
 
+        console.log('Emails sent successfully');
         return { success: true, message: "Emails sent successfully" };
     } catch (err) {
         console.error("Error sending emails:", err);

@@ -12,6 +12,8 @@ import swaggerDocument from "./open-api.json" with { type: "json" };
 
 const app = express();
 
+app.set('trust proxy', true);
+
 // CORS configuration
 app.use(cors({
     origin: ENV.ORIGIN,
