@@ -25,7 +25,7 @@ async function mailSender(options: MailSenderOptions) {
                 html: htmlContent,
             }).then(() => {
                 console.log('Email sent successfully to:', email);
-            }).catch((emailError) => {
+            }).catch((emailError: Error) => {
                 console.error('Failed to send email to:', email, 'Error:', emailError);
                 throw emailError;
             });
