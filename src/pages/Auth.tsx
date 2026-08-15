@@ -43,6 +43,7 @@ const Auth = (AuthProps: AuthPropsType) => {
     const {hasHousehold,loading,token,setLoading} = useAuthAndHouseholdCheck();
     const navigate = useNavigate();
     const [otpBox,setOtpBox] = useState(false);
+    const [verifying,setVerifying] = useState(false);
 
     const {
         register,
@@ -95,6 +96,7 @@ const Auth = (AuthProps: AuthPropsType) => {
     };
 
     const handleVerifyOTP = () => {
+        setVerifying(true);
         const formData = getValues();
         dispatch(signupAction(
             formData.name!, 
@@ -211,11 +213,13 @@ const Auth = (AuthProps: AuthPropsType) => {
                     />
 
                     <CTAButton
-                        reactNode={loading ? <Loader/> : <>Verify OTP</>}
+                        reactNode={verifying ? <Loader isButton={true}/> : <>Verify OTP</>}
                         className="mt-4 py-2 px-4 w-fit ml-auto"
                         type="button"
                         onClick={handleVerifyOTP}
-                        disabled={loading}
+                        disabled={verifying}
+                        width="100"
+                        height="100"
                     />
 
                     </div>
