@@ -10,9 +10,12 @@ export default defineConfig({
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  optimizeDeps: {
+    include: ['react-barcode-scanner', 'barcode-detector']
+  },
   resolve: {
     alias: {
       '@': '/src',
     },
-  },
+  }
 })
