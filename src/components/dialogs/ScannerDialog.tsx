@@ -1,11 +1,25 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControl, OutlinedInput } from "@mui/material";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import CTAButton from "../common/CTAButton";
 import { AnimatePresence, motion } from "motion/react";
-import BarcodeScanner from "react-qr-barcode-scanner";
 import { toast } from "react-toastify";
 import { useBarcode } from "../../contexts/BarcodeContext";
 import { API_OPEN_FOOD_FACTS } from "../../lib/apis";
+import { BarcodeScanner, BarcodeScannerProvider, type DetectedBarcode, type ScanOptions } from "react-barcode-scanner";
+import 'react-barcode-scanner/polyfill'
+
+const FORMATS = [
+  'code_128',
+  'code_39',
+  'code_93',
+  'codabar',
+  'ean_13',
+  'ean_8',
+  'itf',
+  'qr_code',
+  'upc_a',
+  'upc_e'
+]
 
 const ScannerDialog = ({ children } : { children: React.ReactNode }) => {
 
@@ -14,7 +28,7 @@ const ScannerDialog = ({ children } : { children: React.ReactNode }) => {
     const [barcode,setBarcode] = useState<string>('');
     const { setScannedData } = useBarcode();
 
-    const handleOpen = () => {
+    const handleOpen = async () => {
       setOpen(true);
       setScanner(true);
     }
@@ -23,6 +37,15 @@ const ScannerDialog = ({ children } : { children: React.ReactNode }) => {
       setOpen(false);
       setScanner(false);
     }
+
+    const options: ScanOptions = { delay: 500, formats: FORMATS } ;
+
+    const onCapture = useCallback((barcodes: DetectedBarcode[]) => {
+      if (barcodes.length === 0) return
+      const scannedBarcode = barcodes[0].rawValue;
+      console.log('Scanned:', scannedBarcode);
+      handleScan(scannedBarcode);
+    }, [])
 
     const fetchProductData = async (barcode: string) => {
         try {
@@ -96,15 +119,16 @@ const ScannerDialog = ({ children } : { children: React.ReactNode }) => {
               <DialogContent className="flex flex-col gap-4">
                 {
                     scanner && (
-                        <BarcodeScanner
-                        onUpdate={(_,res) => {
-                            if(res) handleScan(res.getText());
-                        }}
-                        onError={(err) => {
-                            console.error('Scanner error:', err);
-                        }}
-                        />
-                    )
+                    <BarcodeScannerProvider>
+                      <BarcodeScanner
+                        onCapture={onCapture}
+                        onCameraError={(err) => console.error('Camera error:', err)}
+                        onScanError={(err) => console.error('Scan error:', err)}
+                        options={options}
+                        paused={!scanner}
+                      />
+                    </BarcodeScannerProvider>
+                  )
                 }
                 <FormControl>
                   <OutlinedInput
