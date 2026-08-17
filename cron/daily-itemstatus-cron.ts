@@ -1,14 +1,12 @@
 import { updateItemStatusCron } from "../services/item.service.js";
-import { Response } from "express";
-import { error, success } from "../utils/response.js";
+import { Request, Response } from "express";
 
-export const run = async (_req: any, res: Response) => {
-
-  await updateItemStatusCron().then(() => {
-    success(res, "Cron job completed successfully.");
-  }).catch((err) => {
+export const run = async (_req: Request, res: Response) => {
+  try {
+    await updateItemStatusCron();
+    res.status(200).send("OK");
+  } catch (err) {
     console.error("Error in cron item status update:", err);
-    error(res, "Error in cron item status update");
-  });
-    
+    res.status(500).send("Error");
+  }
 };

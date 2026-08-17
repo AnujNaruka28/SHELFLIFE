@@ -1,10 +1,9 @@
 import Item from "../models/Item.js";
 import { getMembersOfHousehold } from "../services/household.service.js";
 import mailSender from "../utils/mailSender.js";
-import { Response } from "express";
-import { error, success } from "../utils/response.js";
+import { Request, Response } from "express";
 
-export const run = async (_req: any, res: Response) => {
+export const run = async (_req: Request, res: Response) => {
     try {
        const items = await Item.find({ status: { $in : ["expiring-soon"]}});
 
@@ -21,25 +20,29 @@ export const run = async (_req: any, res: Response) => {
             const household = await getMembersOfHousehold(houseId);
             if(household.members && household.members.length > 0) {
                 const membersByEmail = household.members.map((mem: any) => mem.email);
-
-                await mailSender({
-                    emails: membersByEmail,
-                    householdName: household.name,
-                    items: items.map((item:any) => ({
-                        name: item.name,
-                        quantity: item.quantity,
-                        category: item.category,
-                        expiryDate: item.expiryDate
-                    })),
-                    subject: "ShelfLife Daily Reminder"
-                });
+                
+                try {
+                    const info = await mailSender({
+                        emails: membersByEmail,
+                        householdName: household.name,
+                        items: items.map((item:any) => ({
+                            name: item.name,
+                            quantity: item.quantity,
+                            category: item.category,
+                            expiryDate: item.expiryDate
+                        })),
+                        subject: "ShelfLife Daily Reminder"
+                    })
+                } catch (error) {
+                    console.error(error);
+                }
             }
        }
 
         console.log("Daily digest emails sent successfully.");
-        success(res, "Daily digest emails sent successfully.");
+        res.status(200).send("OK");
     } catch (err) {
         console.error("Cron job failed:", err);
-        error(res, "Cron job failed");
+        res.status(500).send("Error");
     }
 };
