@@ -4,7 +4,7 @@ import mailSender from "../utils/mailSender.js";
 import { Request, Response } from "express";
 
 export const run = async (_req: Request, res: Response) => {
-    try {
+    (async () => {
        const items = await Item.find({ status: { $in : ["expiring-soon"]}});
 
        const itemsByHousehold = new Map();
@@ -22,7 +22,7 @@ export const run = async (_req: Request, res: Response) => {
                 const membersByEmail = household.members.map((mem: any) => mem.email);
                 
                 try {
-                    const info = await mailSender({
+                    await mailSender({
                         emails: membersByEmail,
                         householdName: household.name,
                         items: items.map((item:any) => ({
@@ -34,15 +34,11 @@ export const run = async (_req: Request, res: Response) => {
                         subject: "ShelfLife Daily Reminder"
                     })
                 } catch (error) {
-                    console.error(error);
+                    
                 }
             }
        }
-
-        console.log("Daily digest emails sent successfully.");
-        res.status(200).send("OK");
-    } catch (err) {
-        console.error("Cron job failed:", err);
-        res.status(500).send("Error");
-    }
+    })().catch(() => {});
+    
+    res.end();
 };

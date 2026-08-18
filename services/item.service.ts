@@ -88,7 +88,7 @@ const updateItemStatusCron = async () => {
         {
             $set: { status: "expired" },
         },
-    );
+    ).exec();
 
     await Item.updateMany(
         {
@@ -101,7 +101,7 @@ const updateItemStatusCron = async () => {
         {
             $set: { status: "expiring-soon" },
         },
-    );
+    ).exec(); 
 };
 
 const deleteItemById = async (id: string) => await Item.findByIdAndDelete(id);
